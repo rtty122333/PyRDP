@@ -23,18 +23,20 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         #self.setGeometry(300, 300, 410, 180)
         #self.setFixedSize(self.width(), self.height())
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
-        self.openBtn.clicked.connect(self.file_dialog)
-        self.saveBtn.clicked.connect(self.file_dialog)
-        self.saveBtn.clicked.connect(self.file_dialog)
+        self.openBtn.clicked.connect(self.openFile)
+        self.saveBtn.clicked.connect(self.saveFile)
+        self.saveasBtn.clicked.connect(self.saveAsFile)
         self.displayconnectionbar=QtCore.Qt.Checked
         self.defaultRdpPath=os.getcwd()+"\\.tmpRdp.rdp"
         self.rdpFilePath=''
         self.tmpFilePath=''
+        self.saveAsFilePath=''
 
         #self.setGeometry(300, 300, 250, 150)
         # self.connect(self.accountEdit, SIGNAL("returnPressed(void)"),
         #              self.runCommand
     def toOptionDWidget(self):
+        self.tmpFilePath=os.getcwd()+'\\tmp\\rdp_'+self.cmpLineEdit_2.text()+'.rdp'
         self.resize(411,346)
         self.defaultWidget.hide()
         self.optionWidget.show()
@@ -65,71 +67,93 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         else:
             QtGui.QMessageBox.question(self,'Message',u'请输入合法的IP地址',QtGui.QMessageBox.Yes,QtGui.QMessageBox.Yes)
         
-    def file_dialog(self):
-        fd = QtGui.QFileDialog(self)
-        if os.path.isfile(self.defaultRdpPath):
-            self.rdpFilePath = fd.getOpenFileName()
+    def openFile(self):
+        fd = QtGui.QFileDialog(self).getOpenFileName()
+        if os.path.isfile(fd):
+            self.rdpFilePath = fd
             self.updateView()
-    def enable_save(self):
-        self.ui.button_save.setEnabled(True)
-    def file_save(self):
-        if os.path.isfile(self.filename):
-            import codecs
-            s = codecs.open(self.filename,'w','utf-8')
-            s.write(unicode(self.ui.editor_window.toPlainText()))
-            s.close()
-            self.ui.button_save.setEnabled(False)
+    def saveFile(self):
+        if(len(self.rdpFilePath)==0):
+            self.saveTmpFileFromDefault()
+            if(len(self.saveAsFilePath)==0):
+                tmpFile = open(self.tmpFilePath, 'w')
+            else:
+                tmpFile = open(self.saveAsFilePath, 'w')
+            tmpFile.write(self.defaultContent)
+        else:
+            self.saveTmpFileFromRDP()
+            rdpFile = open(self.rdpFilePath, 'w')
+            rdpFile.write(self.defaultContent)
 
+    def saveAsFile(self):
+        saveasFilePath = QtGui.QFileDialog(self).getSaveFileName()
+        if(len(saveasFilePath)!=0):
+            if(len(self.rdpFilePath)==0):
+                self.saveAsFilePath=saveasFilePath
+                self.saveTmpFileFromDefault()
+                tmpFile = open(self.saveAsFilePath, 'w')
+                tmpFile.write(self.defaultContent)
+            else:
+                self.saveTmpFileFromRDP()
+                self.rdpFilePath=saveasFilePath
+                rdpFile = open(self.rdpFilePath, 'w')
+                rdpFile.write(self.defaultContent)
+        
     def updataRdpFile(self):
         if(len(self.rdpFilePath)==0):
-            self.defaultContent=open(self.defaultRdpPath,'r+').read()
-            self.tmpFilePath=os.getcwd()+'\\.rdp_'+self.cmpLineEdit_2.text()+'.rdp'
-            if self.connBarCheckBox.checkState()==QtCore.Qt.Checked:
-                self.defaultContent+='displayconnectionbar:i:1\n'
-            else:
-                self.defaultContent+='displayconnectionbar:i:0\n'
-            if self.printCheckBox.checkState()==QtCore.Qt.Checked:
-                self.defaultContent+='redirectprinters:i:1\n'
-            else:
-                self.defaultContent+='redirectprinters:i:0\n'
-            if self.cliCheckBox.checkState()==QtCore.Qt.Checked:
-                self.defaultContent+='redirectclipboard:i:1\n'
-            else:
-                self.defaultContent+='redirectclipboard:i:0\n'
-            if self.reconnCheckBox.checkState()==QtCore.Qt.Checked:
-                self.defaultContent+='autoreconnection enabled:i:1\n'
-            else:
-                self.defaultContent+='autoreconnection enabled:i:0\n'
-            self.defaultContent+='authentication level:i:'+str(self.authComboBox.currentIndex())+'\n'
-            self.defaultContent+='full address:s:'+str(self.cmpLineEdit_2.text())+'\n'
+            #self.tmpFilePath=os.getcwd()+'\\tmp\\rdp_'+self.cmpLineEdit_2.text()+'.rdp'
+            self.saveTmpFileFromDefault()
         else:
             self.tmpFilePath=self.rdpFilePath
-            if(self.defaultContent.find('displayconnectionbar:i:')<0):
-                self.defaultContent+='displayconnectionbar:i:1' if self.connBarCheckBox.checkState()==QtCore.Qt.Checked else 'displayconnectionbar:i:0'
-            else:
-                self.disConnBarRe.sub('1' if self.connBarCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
-            if(self.defaultContent.find('redirectprinters:i:')<0):
-                self.defaultContent+='redirectprinters:i:1' if self.printCheckBox.checkState()==QtCore.Qt.Checked else 'redirectprinters:i:0'
-            else:
-                self.printRe.sub('1' if self.printCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
-            if(self.defaultContent.find('redirectclipboard:i:')<0):
-                self.defaultContent+='redirectclipboard:i:1' if self.cliCheckBox.checkState()==QtCore.Qt.Checked else 'redirectclipboard:i:0'
-            else:
-                self.cliRe.sub('1' if self.cliCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
-            if(self.defaultContent.find('autoreconnection enabled:i:')<0):
-                self.defaultContent+='autoreconnection enabled:i:1' if self.reconnCheckBox.checkState()==QtCore.Qt.Checked else 'autoreconnection enabled:i:0'
-            else:
-                self.reconnRe.sub('1' if self.reconnCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
-            if(self.defaultContent.find('authentication level:i:')<0):
-                self.defaultContent+='authentication level:i:'+self.authComboBox.currentIndex()
-            else:
-                self.authlevelRe.sub(str(self.authComboBox.currentIndex()),self.defaultContent)
-            if(self.defaultContent.find('full address:s:')<0):
-                self.defaultContent+='full address:s:'+self.cmpLineEdit_2.text()
-            else:
-                self.addressRe.sub(str(self.cmpLineEdit_2.text()),self.defaultContent)
+            self.saveTmpFileFromRDP()
         tmpFile = open(self.tmpFilePath, 'w')
         tmpFile.write(self.defaultContent)
+
+    def saveTmpFileFromDefault(self):
+        self.defaultContent=open(self.defaultRdpPath,'r+').read()
+        if self.connBarCheckBox.checkState()==QtCore.Qt.Checked:
+            self.defaultContent+='displayconnectionbar:i:1\n'
+        else:
+            self.defaultContent+='displayconnectionbar:i:0\n'
+        if self.printCheckBox.checkState()==QtCore.Qt.Checked:
+            self.defaultContent+='redirectprinters:i:1\n'
+        else:
+            self.defaultContent+='redirectprinters:i:0\n'
+        if self.cliCheckBox.checkState()==QtCore.Qt.Checked:
+            self.defaultContent+='redirectclipboard:i:1\n'
+        else:
+            self.defaultContent+='redirectclipboard:i:0\n'
+        if self.reconnCheckBox.checkState()==QtCore.Qt.Checked:
+            self.defaultContent+='autoreconnection enabled:i:1\n'
+        else:
+            self.defaultContent+='autoreconnection enabled:i:0\n'
+        self.defaultContent+='authentication level:i:'+str(self.authComboBox.currentIndex())+'\n'
+        self.defaultContent+='full address:s:'+str(self.cmpLineEdit_2.text())+'\n'
+    def saveTmpFileFromRDP(self):
+        if(self.defaultContent.find('displayconnectionbar:i:')<0):
+            self.defaultContent+='displayconnectionbar:i:1' if self.connBarCheckBox.checkState()==QtCore.Qt.Checked else 'displayconnectionbar:i:0'
+        else:
+            self.disConnBarRe.sub('1' if self.connBarCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
+        if(self.defaultContent.find('redirectprinters:i:')<0):
+            self.defaultContent+='redirectprinters:i:1' if self.printCheckBox.checkState()==QtCore.Qt.Checked else 'redirectprinters:i:0'
+        else:
+            self.printRe.sub('1' if self.printCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
+        if(self.defaultContent.find('redirectclipboard:i:')<0):
+            self.defaultContent+='redirectclipboard:i:1' if self.cliCheckBox.checkState()==QtCore.Qt.Checked else 'redirectclipboard:i:0'
+        else:
+            self.cliRe.sub('1' if self.cliCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
+        if(self.defaultContent.find('autoreconnection enabled:i:')<0):
+            self.defaultContent+='autoreconnection enabled:i:1' if self.reconnCheckBox.checkState()==QtCore.Qt.Checked else 'autoreconnection enabled:i:0'
+        else:
+            self.reconnRe.sub('1' if self.reconnCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
+        if(self.defaultContent.find('authentication level:i:')<0):
+            self.defaultContent+='authentication level:i:'+self.authComboBox.currentIndex()
+        else:
+            self.authlevelRe.sub(str(self.authComboBox.currentIndex()),self.defaultContent)
+        if(self.defaultContent.find('full address:s:')<0):
+            self.defaultContent+='full address:s:'+self.cmpLineEdit_2.text()
+        else:
+            self.addressRe.sub(str(self.cmpLineEdit_2.text()),self.defaultContent)
     
     def updateView(self):
         self.defaultContent = open(self.rdpFilePath,'r+').read()

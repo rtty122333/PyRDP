@@ -247,7 +247,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="movable">
       <bool>false</bool>
@@ -740,15 +740,27 @@
          <string>端口</string>
         </property>
        </widget>
-       <widget class="QTreeView" name="equipTreeView">
+       <widget class="QTreeWidget" name="equipTreeWidget">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>81</y>
-          <width>331</width>
+          <x>20</x>
+          <y>80</y>
+          <width>311</width>
           <height>141</height>
          </rect>
         </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <attribute name="headerVisible">
+         <bool>false</bool>
+        </attribute>
        </widget>
       </widget>
      </widget>

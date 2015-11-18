@@ -247,7 +247,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="movable">
       <bool>false</bool>
@@ -740,7 +740,7 @@
          <string>端口</string>
         </property>
        </widget>
-       <widget class="QTreeView" name="treeView">
+       <widget class="QTreeView" name="equipTreeView">
         <property name="geometry">
          <rect>
           <x>10</x>

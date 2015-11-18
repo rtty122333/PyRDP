@@ -184,7 +184,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if(self.defaultContent.find('redirectcomports:i:')<0):
             self.defaultContent+='redirectcomports:i:'+('1' if self.portCheckBox.checkState()==QtCore.Qt.Checked else '0')+'\n'
         else:
-            self.defaultContent=self.portRe.sub('1' if self.portCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
+            self.defaultContent=self.portCardRe.sub('1' if self.portCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
 
         
     

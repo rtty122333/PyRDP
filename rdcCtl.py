@@ -441,7 +441,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         return reip.match(ipStr)
 
     def closeEvent(self, event):
-        exit()
+        sys.exit()
 
 
 

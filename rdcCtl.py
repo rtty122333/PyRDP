@@ -34,45 +34,48 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.tmpFilePath = ''
         self.fromDefault = True
 
-        self.drives=QtGui.QTreeWidgetItem(self.equipTreeWidget)
-        self.drives.setText(0,u'驱动器')
-        self.drives.setFlags(self.drives.flags() | QtCore.Qt.ItemIsUserCheckable)
-        self.drives.setCheckState(0,QtCore.Qt.Unchecked)
-        
-        p1=re.compile('\s')
+        self.drives = QtGui.QTreeWidgetItem(self.equipTreeWidget)
+        self.drives.setText(0, u'驱动器')
+        self.drives.setFlags(self.drives.flags() |
+                             QtCore.Qt.ItemIsUserCheckable)
+        self.drives.setCheckState(0, QtCore.Qt.Unchecked)
+
+        p1 = re.compile('\s')
         data = os.popen('wmic logicaldisk  get VolumeName,Name').read()
-        dataItem=data.split('\n')
-        for i in range(1,len(dataItem)):
-            dataItem[i]=p1.sub('',dataItem[i])
-            item=dataItem[i].split(':')
-            length=len(item)
-            if(length>1):
-                itemStr=item[1]+' ('+item[0]+':)'
-                itemDive=QtGui.QTreeWidgetItem(self.drives)
-                itemDive.setText(0,itemStr.decode('GBK'))
-                itemDive.setFlags(itemDive.flags() | QtCore.Qt.ItemIsUserCheckable)
-                itemDive.setCheckState(0,QtCore.Qt.Unchecked)
+        dataItem = data.split('\n')
+        for i in range(1, len(dataItem)):
+            dataItem[i] = p1.sub('', dataItem[i])
+            item = dataItem[i].split(':')
+            length = len(item)
+            if(length > 1):
+                itemStr = item[1] + ' (' + item[0] + ':)'
+                itemDive = QtGui.QTreeWidgetItem(self.drives)
+                itemDive.setText(0, itemStr.decode('GBK'))
+                itemDive.setFlags(itemDive.flags() |
+                                  QtCore.Qt.ItemIsUserCheckable)
+                itemDive.setCheckState(0, QtCore.Qt.Unchecked)
                 self.drives.addChild(itemDive)
 
-        dynamicDrive=QtGui.QTreeWidgetItem(self.drives)
-        dynamicDrive.setText(0,u'稍后插入的驱动器')
-        dynamicDrive.setFlags(dynamicDrive.flags() | QtCore.Qt.ItemIsUserCheckable)
-        dynamicDrive.setCheckState(0,QtCore.Qt.Unchecked)
+        dynamicDrive = QtGui.QTreeWidgetItem(self.drives)
+        dynamicDrive.setText(0, u'稍后插入的驱动器')
+        dynamicDrive.setFlags(dynamicDrive.flags() |
+                              QtCore.Qt.ItemIsUserCheckable)
+        dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
         self.drives.addChild(dynamicDrive)
 
-        
+        self.devices = QtGui.QTreeWidgetItem(self.equipTreeWidget)
+        self.devices.setText(0, u'其他支持的即插即用(PnP)设备')
+        self.devices.setFlags(self.devices.flags() |
+                              QtCore.Qt.ItemIsUserCheckable)
+        self.devices.setCheckState(0, QtCore.Qt.Unchecked)
 
-        self.devices=QtGui.QTreeWidgetItem(self.equipTreeWidget)
-        self.devices.setText(0,u'其他支持的即插即用(PnP)设备')
-        self.devices.setFlags(self.devices.flags() | QtCore.Qt.ItemIsUserCheckable)
-        self.devices.setCheckState(0,QtCore.Qt.Unchecked)
-        
-        dynamicDevice=QtGui.QTreeWidgetItem(self.devices)
-        dynamicDevice.setText(0,u'稍后插入的设备')
-        dynamicDevice.setFlags(dynamicDevice.flags() | QtCore.Qt.ItemIsUserCheckable)
-        dynamicDevice.setCheckState(0,QtCore.Qt.Unchecked)
+        dynamicDevice = QtGui.QTreeWidgetItem(self.devices)
+        dynamicDevice.setText(0, u'稍后插入的设备')
+        dynamicDevice.setFlags(dynamicDevice.flags() |
+                               QtCore.Qt.ItemIsUserCheckable)
+        dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
         self.equipTreeWidget.itemClicked.connect(self.equipClicked)
-        #self.devices.treeItemChanged.connect(self.equipStateChange)
+        #self.devices.itemChanged.connect(self.equipClicked)
         self.resize(391, 151)
         '''
         model=QtGui.QStandardItemModel(self.equipTreeView)
@@ -84,28 +87,28 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         itemProject->setChild(itemFolder->index().row(),1,new QStandardItem(QStringLiteral("信息说明")));  
         itemFolder = new QStandardItem(m_publicIconMap[QStringLiteral("treeItem_folder")],QStringLiteral("文件夹2"));  
         itemProject->appendRow(itemFolder);  '''
-        
 
         #self.setGeometry(300, 300, 250, 150)
         # self.connect(self.accountEdit, SIGNAL("returnPressed(void)"),
         #              self.runCommand
-    def equipParentChangeWithChild(self,item):
-        length=item.childCount()
-        checkedSize=0
-        for i in range(0,length):
-            if(item.child(i).checkState(0)==QtCore.Qt.Checked):
-                checkedSize+=1
-        if(checkedSize==length):
-            item.setCheckState(0,QtCore.Qt.Checked)
-        elif(checkedSize==0):
-            item.setCheckState(0,QtCore.Qt.Unchecked)
+    def equipParentChangeWithChild(self, item):
+        length = item.childCount()
+        checkedSize = 0
+        for i in range(0, length):
+            if(item.child(i).checkState(0) == QtCore.Qt.Checked):
+                checkedSize += 1
+        if(checkedSize == length):
+            item.setCheckState(0, QtCore.Qt.Checked)
+        elif(checkedSize == 0):
+            item.setCheckState(0, QtCore.Qt.Unchecked)
         else:
-            item.setCheckState(0,QtCore.Qt.PartiallyChecked)
+            item.setCheckState(0, QtCore.Qt.PartiallyChecked)
 
-    def equipClicked(self,item):
-        if(isinstance(item.parent(),QtGui.QTreeWidgetItem)):
-             self.equipParentChangeWithChild(item.parent())
-        self.setQTreeWidgetItems(item,item.checkState(0))
+    def equipClicked(self, item):
+        print 'clicked'
+        if(isinstance(item.parent(), QtGui.QTreeWidgetItem)):
+            self.equipParentChangeWithChild(item.parent())
+        self.setQTreeWidgetItems(item, item.checkState(0))
 
     def toOptionDWidget(self):
         # self.tmpFilePath=os.getcwd()+'\\tmp\\rdp_'+self.cmpLineEdit_2.text()+'.rdp'
@@ -220,10 +223,10 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             ('1' if self.portCheckBox.checkState()
              == QtCore.Qt.Checked else '0') + '\n'
 
-        if(self.drives.checkState(0)==QtCore.Qt.Checked):
-            self.defaultContent += 'drivestoredirect:s:*'  + '\n'
-        if(self.devices.checkState(0)==QtCore.Qt.Checked):
-            self.defaultContent += 'devicestoredirect:s:*'  + '\n'
+        if(self.drives.checkState(0) == QtCore.Qt.Checked):
+            self.defaultContent += 'drivestoredirect:s:*' + '\n'
+        if(self.devices.checkState(0) == QtCore.Qt.Checked):
+            self.defaultContent += 'devicestoredirect:s:*' + '\n'
 
     def saveTmpFileFromRDP(self):
         if(self.defaultContent.find('displayconnectionbar:i:') < 0):
@@ -297,26 +300,30 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 ('1' if self.portCheckBox.checkState()
                  == QtCore.Qt.Checked else '0') + '\n'
         else:
-            self.defaultContent = self.portCardRe.sub('1' if self.portCheckBox.checkState()==QtCore.Qt.Checked else '0',self.defaultContent)
+            self.defaultContent = self.portCardRe.sub('1' if self.portCheckBox.checkState(
+            ) == QtCore.Qt.Checked else '0', self.defaultContent)
 
         if(self.defaultContent.find('drivestoredirect:s:') < 0):
-            if(self.drives.checkState(0)==QtCore.Qt.Checked):
-                self.defaultContent += 'drivestoredirect:s:*'  + '\n'
+            if(self.drives.checkState(0) == QtCore.Qt.Checked):
+                self.defaultContent += 'drivestoredirect:s:*' + '\n'
         else:
-            if(self.drives.checkState(0)==QtCore.Qt.Unchecked):
-                self.defaultContent = self.drivesRe.sub('',self.defaultContent)
-            elif(self.drives.checkState(0)==QtCore.Qt.Checked):
-                self.defaultContent = self.drivesRe.sub('*',self.defaultContent)
+            if(self.drives.checkState(0) == QtCore.Qt.Unchecked):
+                self.defaultContent = self.drivesRe.sub(
+                    '', self.defaultContent)
+            elif(self.drives.checkState(0) == QtCore.Qt.Checked):
+                self.defaultContent = self.drivesRe.sub(
+                    '*', self.defaultContent)
 
         if(self.defaultContent.find('devicestoredirect:s:') < 0):
-            if(self.devices.checkState(0)==QtCore.Qt.Checked):
-                self.defaultContent += 'devicestoredirect:s:*'  + '\n'
+            if(self.devices.checkState(0) == QtCore.Qt.Checked):
+                self.defaultContent += 'devicestoredirect:s:*' + '\n'
         else:
-            if(self.devices.checkState(0)==QtCore.Qt.Unchecked):
-                self.defaultContent = self.devicesRe.sub('',self.defaultContent)
-            elif(self.devices.checkState(0)==QtCore.Qt.Checked):
-                self.defaultContent = self.devicesRe.sub('*',self.defaultContent)
-
+            if(self.devices.checkState(0) == QtCore.Qt.Unchecked):
+                self.defaultContent = self.devicesRe.sub(
+                    '', self.defaultContent)
+            elif(self.devices.checkState(0) == QtCore.Qt.Checked):
+                self.defaultContent = self.devicesRe.sub(
+                    '*', self.defaultContent)
 
     def updateView(self):
         self.defaultContent = open(self.rdpFilePath, 'r+').read()
@@ -398,31 +405,31 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.drivesRe = re.compile('(?<=drivestoredirect:s:).*')
         drivesChkB = self.drivesRe.findall(self.defaultContent)
         if(len(drivesChkB) > 0):
-            if(drivesChkB[0]=='*'):
-                if(self.drives.checkState(0)==QtCore.Qt.Unchecked):
-                    self.drives.setCheckState(0,QtCore.Qt.Checked)
-                    self.setQTreeWidgetItems(self.drives,QtCore.Qt.Checked)
+            if(drivesChkB[0] == '*'):
+                if(self.drives.checkState(0) == QtCore.Qt.Unchecked):
+                    self.drives.setCheckState(0, QtCore.Qt.Checked)
+                    self.setQTreeWidgetItems(self.drives, QtCore.Qt.Checked)
         else:
-            if(self.drives.checkState(0)==QtCore.Qt.Checked):
-                self.drives.setCheckState(0,QtCore.Qt.Unchecked)
-                self.setQTreeWidgetItems(self.drives,QtCore.Qt.Unchecked)
+            if(self.drives.checkState(0) == QtCore.Qt.Checked):
+                self.drives.setCheckState(0, QtCore.Qt.Unchecked)
+                self.setQTreeWidgetItems(self.drives, QtCore.Qt.Unchecked)
 
         self.devicesRe = re.compile('(?<=devicestoredirect:s:).*')
         devicesChkB = self.devicesRe.findall(self.defaultContent)
         if(len(devicesChkB) > 0):
-            if(devicesChkB[0]=='*'):
-                if(self.devices.checkState(0)==QtCore.Qt.Unchecked):
-                    self.devices.setCheckState(0,QtCore.Qt.Checked)
-                    self.setQTreeWidgetItems(self.devices,QtCore.Qt.Checked)
+            if(devicesChkB[0] == '*'):
+                if(self.devices.checkState(0) == QtCore.Qt.Unchecked):
+                    self.devices.setCheckState(0, QtCore.Qt.Checked)
+                    self.setQTreeWidgetItems(self.devices, QtCore.Qt.Checked)
         else:
-            if(self.devices.checkState(0)==QtCore.Qt.Checked):
-                self.devices.setCheckState(0,QtCore.Qt.Unchecked)
-                self.setQTreeWidgetItems(self.devices,QtCore.Qt.Unchecked)
+            if(self.devices.checkState(0) == QtCore.Qt.Checked):
+                self.devices.setCheckState(0, QtCore.Qt.Unchecked)
+                self.setQTreeWidgetItems(self.devices, QtCore.Qt.Unchecked)
 
-    def setQTreeWidgetItems(self,item,state):
-        itemSize=item.childCount()
-        for i in range(0,itemSize):
-            item.child(i).setCheckState(0,state)
+    def setQTreeWidgetItems(self, item, state):
+        itemSize = item.childCount()
+        for i in range(0, itemSize):
+            item.child(i).setCheckState(0, state)
 
     '''def closeEvent(self, event):
         reply = QtGui.QMessageBox.question(

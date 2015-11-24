@@ -447,6 +447,10 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             '^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$')
         return reip.match(ipStr)
 
+    def closeEvent(self, event):
+        sys.exit()
+
+
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

@@ -5,6 +5,7 @@ import os
 from PyQt4 import QtCore, QtGui, uic
 import rdcCtl
 import win32api
+import ctypes
 
 qtCreatorFile = "rdcD.ui"
 
@@ -17,6 +18,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
         self.setupUi(self)
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
         # self.connBtn.clicked.connect(self.connectFunc)
         self.optionWidget.hide()
         self.optionToolBtn.clicked.connect(self.toOptionDWidget)
@@ -34,20 +36,32 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.horizontalSlider.valueChanged.connect(self.deskSizeChanged)
 
         self.initEquipConent()
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap('rdc.ico'),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
         self.initDeskSize()
 
         self.resize(391, 151)
         self.defaultRdpPath = os.getcwd() + "\\.tmpRdp.rdp"
+        self.tmpFileFolder = os.getcwd() + '\\tmp'
         self.rdpFilePath = ''
         self.tmpFilePath = ''
         self.fromDefault = True
 
         self.rdcCtl = rdcCtl.RdcCtl()
 
+        self.initTmpFolder()
+
         # print self.colorComboBox.itemText(0).extracomment
         #self.setGeometry(300, 300, 250, 150)
         # self.connect(self.accountEdit, SIGNAL("returnPressed(void)"),
         #              self.runCommand
+    def initTmpFolder(self):
+        if(os.path.isdir(self.tmpFileFolder)):
+            pass
+        else:
+            os.mkdir(self.tmpFileFolder)
 
     def initEquipConent(self):
         self.drives = QtGui.QTreeWidgetItem(self.equipTreeWidget)
@@ -174,12 +188,18 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
     def toOptionDWidget(self):
         # self.tmpFilePath=os.getcwd()+'\\tmp\\rdp_'+self.cmpLineEdit_2.text()+'.rdp'
+        text=str(self.cmpLineEdit.text())
+        if len(text):
+            self.cmpLineEdit_2.setText(text)
         self.resize(411, 346)
         self.defaultWidget.hide()
         self.optionWidget.show()
         # self.adjustSize()
 
     def toDefaultDWidget(self):
+        text=str(self.cmpLineEdit_2.text())
+        if len(text):
+            self.cmpLineEdit.setText(text)
         self.resize(391, 151)
         self.optionWidget.hide()
         self.defaultWidget.show()
@@ -217,7 +237,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if(self.fromDefault):
             self.saveTmpFileFromDefault()
             if(len(self.tmpFilePath) == 0):
-                self.tmpFilePath = os.getcwd() + '\\tmp\\rdp_' + \
+                self.tmpFilePath = self.tmpFileFolder + '\\rdp_' + \
                     self.cmpLineEdit_2.text() + '.rdp'
             if(len(self.rdpFilePath) == 0):
                 self.rdpFilePath = self.tmpFilePath
@@ -238,7 +258,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
     def updataRdpFile(self):
         if(len(self.tmpFilePath) == 0):
-            self.tmpFilePath = os.getcwd() + '\\tmp\\rdp_' + \
+            self.tmpFilePath = self.tmpFileFolder + '\\rdp_' + \
                 self.cmpLineEdit_2.text() + '.rdp'
         if(self.fromDefault):
             self.saveTmpFileFromDefault()

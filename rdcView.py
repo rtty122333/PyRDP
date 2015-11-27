@@ -82,14 +82,14 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 itemDive.setText(0, itemStr.decode('GBK'))
                 itemDive.setFlags(itemDive.flags() |
                                   QtCore.Qt.ItemIsUserCheckable)
-                itemDive.setCheckState(0, QtCore.Qt.Unchecked)
+                #itemDive.setCheckState(0, QtCore.Qt.Unchecked)
                 self.drives.addChild(itemDive)
 
         dynamicDrive = QtGui.QTreeWidgetItem(self.drives)
         dynamicDrive.setText(0, u'稍后插入的驱动器')
         dynamicDrive.setFlags(dynamicDrive.flags() |
                               QtCore.Qt.ItemIsUserCheckable)
-        dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
+        #dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
         self.drives.addChild(dynamicDrive)
 
         self.devices = QtGui.QTreeWidgetItem(self.equipTreeWidget)
@@ -102,7 +102,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         dynamicDevice.setText(0, u'稍后插入的设备')
         dynamicDevice.setFlags(dynamicDevice.flags() |
                                QtCore.Qt.ItemIsUserCheckable)
-        dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
+        #dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
         self.equipTreeWidget.itemClicked.connect(self.equipClicked)
         # self.devices.itemChanged.connect(self.equipClicked)
 

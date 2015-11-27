@@ -1252,6 +1252,38 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>cmpLineEdit_2</tabstop>
+  <tabstop>connBtn_2</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>cmpLineEdit</tabstop>
+  <tabstop>connBtn</tabstop>
+  <tabstop>helpBtn</tabstop>
+  <tabstop>saveBtn</tabstop>
+  <tabstop>saveasBtn</tabstop>
+  <tabstop>openBtn</tabstop>
+  <tabstop>colorComboBox</tabstop>
+  <tabstop>connBarCheckBox</tabstop>
+  <tabstop>audioPlayComBox</tabstop>
+  <tabstop>audioCaptureComBox</tabstop>
+  <tabstop>keyComBox</tabstop>
+  <tabstop>printCheckBox</tabstop>
+  <tabstop>cliCheckBox</tabstop>
+  <tabstop>smartCardCheckBox</tabstop>
+  <tabstop>portCheckBox</tabstop>
+  <tabstop>equipTreeWidget</tabstop>
+  <tabstop>connTypeComboBox</tabstop>
+  <tabstop>backCheckBox</tabstop>
+  <tabstop>fontCheckBox</tabstop>
+  <tabstop>backCssCheckBox</tabstop>
+  <tabstop>dragCheckBox</tabstop>
+  <tabstop>menuCheckBox</tabstop>
+  <tabstop>bitMapCheckBox</tabstop>
+  <tabstop>viewCheckBox</tabstop>
+  <tabstop>reconnCheckBox</tabstop>
+  <tabstop>authComboBox</tabstop>
+  <tabstop>helpBtn_2</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

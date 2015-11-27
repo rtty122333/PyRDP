@@ -272,7 +272,7 @@
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>30</y>
+          <y>40</y>
           <width>331</width>
           <height>51</height>
          </rect>
@@ -336,32 +336,6 @@
           </widget>
          </item>
         </layout>
-       </widget>
-       <widget class="QLabel" name="defaultLabel_2">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>90</y>
-          <width>191</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>当您连接时，向您询问凭证数据。</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="saveRdpCheckBox">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>110</y>
-          <width>121</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>允许我保存凭据。</string>
-        </property>
        </widget>
       </widget>
       <widget class="QGroupBox" name="connSetGroupBox">
@@ -446,6 +420,113 @@
           <property name="title">
            <string>显示配置</string>
           </property>
+          <widget class="QLabel" name="sizeLabel">
+           <property name="geometry">
+            <rect>
+             <x>40</x>
+             <y>20</y>
+             <width>301</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>选择远程桌面的大小。将滑块拖动到最右边开使用全屏。</string>
+           </property>
+          </widget>
+          <widget class="QWidget" name="layoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>40</y>
+             <width>211</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinAndMaxSize</enum>
+            </property>
+            <item>
+             <widget class="QLabel" name="sizeLabel_2">
+              <property name="text">
+               <string>小</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="horizontalSlider">
+              <property name="mouseTracking">
+               <bool>false</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::ClickFocus</enum>
+              </property>
+              <property name="contextMenuPolicy">
+               <enum>Qt::PreventContextMenu</enum>
+              </property>
+              <property name="inputMethodHints">
+               <set>Qt::ImhNone</set>
+              </property>
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>6</number>
+              </property>
+              <property name="singleStep">
+               <number>1</number>
+              </property>
+              <property name="pageStep">
+               <number>1</number>
+              </property>
+              <property name="value">
+               <number>0</number>
+              </property>
+              <property name="sliderPosition">
+               <number>0</number>
+              </property>
+              <property name="tracking">
+               <bool>false</bool>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="invertedAppearance">
+               <bool>false</bool>
+              </property>
+              <property name="invertedControls">
+               <bool>false</bool>
+              </property>
+              <property name="tickPosition">
+               <enum>QSlider::TicksBelow</enum>
+              </property>
+              <property name="tickInterval">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="sizeLabel_3">
+              <property name="text">
+               <string>大</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QLabel" name="deskSizeLabel">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>70</y>
+             <width>81</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </widget>
         </item>
         <item>
@@ -453,6 +534,52 @@
           <property name="title">
            <string>颜色</string>
           </property>
+          <widget class="QLabel" name="colorLabel">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>20</y>
+             <width>161</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>选择远程会话的颜色深度。</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="colorComboBox">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>50</y>
+             <width>121</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="currentIndex">
+            <number>3</number>
+           </property>
+           <item>
+            <property name="text">
+             <string extracomment="15">增强色(15 位)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string extracomment="16">增强色(16 位)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string extracomment="24">真彩色(24 位)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string extracomment="32">最高质量(32 位)</string>
+            </property>
+           </item>
+          </widget>
          </widget>
         </item>
         <item>
@@ -779,12 +906,175 @@
          <x>10</x>
          <y>10</y>
          <width>351</width>
-         <height>201</height>
+         <height>211</height>
         </rect>
        </property>
        <property name="title">
         <string>性能</string>
        </property>
+       <widget class="QLabel" name="connTypeLabel">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>20</y>
+          <width>221</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>选择连接速度来优化性能。</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="connTypeComboBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>40</y>
+          <width>221</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>调制解调器(56Kbps)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>低速宽带(256 Kbps - 2Mbps)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>卫星(2 Mbps - 16 Mbps，高延迟)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>高速宽带( 2 Mbps - 10 Mbps)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>WAN (10 Mbps 或更高速，高延迟)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>局域网(10 Mbps 或更高)</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QCheckBox" name="backCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>90</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>桌面背景</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="connTypeLabel_2">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>70</y>
+          <width>221</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>允许以下功能：</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="fontCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>110</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>字体平滑</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="backCssCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>130</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>桌面布局</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="dragCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>150</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>拖动时显示窗口内容</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="menuCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>170</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>菜单和窗口动画</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="bitMapCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>110</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>持久位图缓存</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="viewCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>90</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>视图样式</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QCheckBox" name="reconnCheckBox">
        <property name="geometry">

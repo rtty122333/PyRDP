@@ -4,6 +4,7 @@ import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
 import rdcCtl
+import win32api
 
 qtCreatorFile = "rdcD.ui"
 
@@ -29,15 +30,21 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.saveBtn.clicked.connect(self.saveFile)
         self.saveasBtn.clicked.connect(self.saveAsFile)
 
+        self.connTypeComboBox.currentIndexChanged.connect(self.connTypeChanged)
+        self.horizontalSlider.valueChanged.connect(self.deskSizeChanged)
+
         self.initEquipConent()
+        self.initDeskSize()
 
         self.resize(391, 151)
-
+        self.defaultRdpPath = os.getcwd() + "\\.tmpRdp.rdp"
         self.rdpFilePath = ''
         self.tmpFilePath = ''
         self.fromDefault = True
 
         self.rdcCtl = rdcCtl.RdcCtl()
+
+        # print self.colorComboBox.itemText(0).extracomment
         #self.setGeometry(300, 300, 250, 150)
         # self.connect(self.accountEdit, SIGNAL("returnPressed(void)"),
         #              self.runCommand
@@ -48,7 +55,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.drives.setFlags(self.drives.flags() |
                              QtCore.Qt.ItemIsUserCheckable)
         self.drives.setCheckState(0, QtCore.Qt.Unchecked)
-        p1=re.compile('\s')
+        p1 = re.compile('\s')
         data = os.popen('wmic logicaldisk  get VolumeName,Name').read()
         dataItem = data.split('\n')
         for i in range(1, len(dataItem)):
@@ -96,6 +103,14 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         itemFolder = new QStandardItem(m_publicIconMap[QStringLiteral("treeItem_folder")],QStringLiteral("文件夹2"));  
         itemProject->appendRow(itemFolder);  '''
 
+    def initDeskSize(self):
+        self.initMetics()
+        size = len(self.metricsMap)
+        self.horizontalSlider.setRange(0, size)
+
+        self.horizontalSlider.setValue(size)
+        self.deskSizeLabel.setText(u'   全屏')
+
     def equipParentChangeWithChild(self, item):
         length = item.childCount()
         checkedSize = 0
@@ -113,6 +128,49 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if(isinstance(item.parent(), QtGui.QTreeWidgetItem)):
             self.equipParentChangeWithChild(item.parent())
         self.setQTreeWidgetItems(item, item.checkState(0))
+
+    def connTypeChanged(self, index):
+        index = self.connTypeComboBox.currentIndex()
+        if index == 0:
+            self.backCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.fontCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.backCssCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.dragCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.menuCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.viewCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.bitMapCheckBox.setCheckState(QtCore.Qt.Checked)
+        elif index == 1:
+            self.backCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.fontCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.backCssCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.dragCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.menuCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.viewCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.bitMapCheckBox.setCheckState(QtCore.Qt.Checked)
+        elif index == 2 or index == 3:
+            self.backCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.fontCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.backCssCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.dragCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.menuCheckBox.setCheckState(QtCore.Qt.Unchecked)
+            self.viewCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.bitMapCheckBox.setCheckState(QtCore.Qt.Checked)
+        else:
+            self.backCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.fontCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.backCssCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.dragCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.menuCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.viewCheckBox.setCheckState(QtCore.Qt.Checked)
+            self.bitMapCheckBox.setCheckState(QtCore.Qt.Checked)
+
+    def deskSizeChanged(self, event):
+        if(event == len(self.metricsMap)):
+            self.deskSizeLabel.setText(u'   全屏')
+        else:
+            sizeLabel = str(self.metricsMap[event][
+                            0]) + ' * ' + str(self.metricsMap[event][1]) + u'像素'
+            self.deskSizeLabel.setText(sizeLabel)
 
     def toOptionDWidget(self):
         # self.tmpFilePath=os.getcwd()+'\\tmp\\rdp_'+self.cmpLineEdit_2.text()+'.rdp'
@@ -189,7 +247,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.rdcCtl.writeFile(self.tmpFilePath)
 
     def saveTmpFileFromDefault(self):
-        self.rdcCtl.initDefaultContent(self.fromDefault)
+        self.rdcCtl.initDefaultContent(self.defaultRdpPath)
         content = []
         content.append('displayconnectionbar:i:1' if self.connBarCheckBox.checkState(
         ) == QtCore.Qt.Checked else 'displayconnectionbar:i:0')
@@ -199,8 +257,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         ) == QtCore.Qt.Checked else 'redirectclipboard:i:0')
         content.append('autoreconnection enabled:i:1' if self.reconnCheckBox.checkState(
         ) == QtCore.Qt.Checked else 'autoreconnection enabled:i:0')
-        content.append('authentication level:i:' +
-                       str(self.authComboBox.currentIndex()))
         content.append('authentication level:i:' +
                        str(self.authComboBox.currentIndex()))
         content.append('full address:s:' + str(self.cmpLineEdit_2.text()))
@@ -217,6 +273,31 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             content.append('drivestoredirect:s:*')
         if(self.devices.checkState(0) == QtCore.Qt.Checked):
             content.append('devicestoredirect:s:*')
+
+        content.append('session bpp:i:' +
+                       str(self.getColorComVal(self.colorComboBox.currentIndex())))
+        content.append('connection type:i:' +
+                       str(self.connTypeComboBox.currentIndex() + 1))
+        content.append('disable wallpaper:i:0' if self.backCheckBox.checkState(
+        ) == QtCore.Qt.Checked else 'disable wallpaper:i:1')
+        content.append('allow font smoothing:i:1' if self.fontCheckBox.checkState(
+        ) == QtCore.Qt.Checked else 'allow font smoothing:i:0')
+        content.append('allow desktop composition:i:1' if self.backCssCheckBox.checkState(
+        ) == QtCore.Qt.Checked else 'allow desktop composition:i:0')
+        content.append('disable full window drag:i:0' if self.dragCheckBox.checkState(
+        ) == QtCore.Qt.Checked else 'disable full window drag:i:1')
+        content.append('disable menu anims:i:0' if self.menuCheckBox.checkState(
+        ) == QtCore.Qt.Checked else 'disable menu anims:i:1')
+        content.append('disable themes:i:0' if self.viewCheckBox.checkState(
+        ) == QtCore.Qt.Checked else 'disable themes:i:1')
+        content.append('bitmapcachepersistenable:i:1' if self.bitMapCheckBox.checkState(
+        ) == QtCore.Qt.Checked else 'bitmapcachepersistenable:i:0')
+
+        index = self.horizontalSlider.value()
+        if index == len(self.metricsMap):
+            index = index - 1
+        content.append('desktopwidth:i:' + str(self.metricsMap[index][0]))
+        content.append('desktopheight:i:' + str(self.metricsMap[index][1]))
 
         self.rdcCtl.appendDefautContent(content)
 
@@ -287,81 +368,110 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         ) == QtCore.Qt.Checked else '0')
 
         self.rdcCtl.setContentFromOpenFile('drivestoredirect:s:', '*' if self.drives.checkState(0
-        ) == QtCore.Qt.Checked else '')
+                                                                                                ) == QtCore.Qt.Checked else '')
 
         self.rdcCtl.setContentFromOpenFile('devicestoredirect:s:', '*' if self.devices.checkState(0
-        ) == QtCore.Qt.Checked else '')
+                                                                                                  ) == QtCore.Qt.Checked else '')
+
+        self.rdcCtl.setContentFromOpenFile(
+            'session bpp:i:', str(self.getColorComVal(self.colorComboBox.currentIndex())))
+
+        self.rdcCtl.setContentFromOpenFile(
+            'connection type:i:', str(self.connTypeComboBox.currentIndex() + 1))
+
+        self.rdcCtl.setContentFromOpenFile(
+            'disable wallpaper:i:', '0' if self.backCheckBox.checkState() == QtCore.Qt.Checked else '1')
+        self.rdcCtl.setContentFromOpenFile(
+            'allow font smoothing:i:', '1' if self.fontCheckBox.checkState() == QtCore.Qt.Checked else '0')
+        self.rdcCtl.setContentFromOpenFile(
+            'allow desktop composition:i:', '1' if self.backCssCheckBox.checkState() == QtCore.Qt.Checked else '0')
+        self.rdcCtl.setContentFromOpenFile(
+            'disable full window drag:i:', '0' if self.dragCheckBox.checkState() == QtCore.Qt.Checked else '1')
+        self.rdcCtl.setContentFromOpenFile(
+            'disable menu anims:i:', '0' if self.menuCheckBox.checkState() == QtCore.Qt.Checked else '1')
+        self.rdcCtl.setContentFromOpenFile(
+            'disable themes:i:', '0' if self.viewCheckBox.checkState() == QtCore.Qt.Checked else '1')
+        self.rdcCtl.setContentFromOpenFile(
+            'bitmapcachepersistenable:i:', '1' if self.bitMapCheckBox.checkState() == QtCore.Qt.Checked else '0')
+
+        index = self.horizontalSlider.value()
+        if index == len(self.metricsMap):
+            index = index - 1
+        self.rdcCtl.setContentFromOpenFile(
+            'desktopwidth:i:', str(self.metricsMap[index][0]))
+        self.rdcCtl.setContentFromOpenFile(
+            'desktopheight:i:', str(self.metricsMap[index][1]))
 
     def updateView(self):
         self.rdcCtl.initDefaultContent(self.rdpFilePath)
         add = self.rdcCtl.getValueByKeyStr('full address:s:')
-        if(len(add) > 0):
-            self.cmpLineEdit_2.setText(add[0])
+        if(add is not None):
+            self.cmpLineEdit_2.setText(add)
 
         disConnBar = self.rdcCtl.getValueByKeyStr('displayconnectionbar:i:')
-        if(len(disConnBar) > 0):
-            if(str(self.connBarCheckBox.checkState()) != disConnBar[0]):
-                self.connBarCheckBox.setCheckState(QtCore.Qt.Unchecked if disConnBar[
-                                                   0] == '0' else QtCore.Qt.Checked)
+        if(disConnBar is not None):
+            if(str(self.connBarCheckBox.checkState()) != disConnBar):
+                self.connBarCheckBox.setCheckState(
+                    QtCore.Qt.Unchecked if disConnBar == '0' else QtCore.Qt.Checked)
 
         printChkB = self.rdcCtl.getValueByKeyStr('redirectprinters:i:')
-        if(len(printChkB) > 0):
-            if(str(self.printCheckBox.checkState()) != printChkB[0]):
-                self.printCheckBox.setCheckState(QtCore.Qt.Unchecked if printChkB[
-                                                 0] == '0' else QtCore.Qt.Checked)
+        if(printChkB is not None):
+            if(str(self.printCheckBox.checkState()) != printChkB):
+                self.printCheckBox.setCheckState(
+                    QtCore.Qt.Unchecked if printChkB == '0' else QtCore.Qt.Checked)
 
         cliChkB = self.rdcCtl.getValueByKeyStr('redirectclipboard:i:')
-        if(len(cliChkB) > 0):
-            if(str(self.cliCheckBox.checkState()) != cliChkB[0]):
-                self.cliCheckBox.setCheckState(QtCore.Qt.Unchecked if cliChkB[
-                                               0] == '0' else QtCore.Qt.Checked)
+        if(cliChkB is not None):
+            if(str(self.cliCheckBox.checkState()) != cliChkB):
+                self.cliCheckBox.setCheckState(
+                    QtCore.Qt.Unchecked if cliChkB == '0' else QtCore.Qt.Checked)
 
         reconnChkB = self.rdcCtl.getValueByKeyStr(
             'autoreconnection enabled:i:')
-        if(len(reconnChkB) > 0):
-            if(str(self.reconnCheckBox.checkState()) != reconnChkB[0]):
-                self.reconnCheckBox.setCheckState(QtCore.Qt.Unchecked if reconnChkB[
-                                                  0] == '0' else QtCore.Qt.Checked)
+        if(reconnChkB is not None):
+            if(str(self.reconnCheckBox.checkState()) != reconnChkB):
+                self.reconnCheckBox.setCheckState(
+                    QtCore.Qt.Unchecked if reconnChkB == '0' else QtCore.Qt.Checked)
 
         authlevelComB = self.rdcCtl.getValueByKeyStr('authentication level:i:')
-        if(len(authlevelComB) > 0):
-            curIndex = int(authlevelComB[0])
+        if(authlevelComB is not None):
+            curIndex = int(authlevelComB)
             if(self.authComboBox.currentIndex() != curIndex):
                 self.authComboBox.setCurrentIndex(curIndex)
 
         audioCaptureComB = self.rdcCtl.getValueByKeyStr('audiocapturemode:i:')
-        if(len(audioCaptureComB) > 0):
-            curIndex = int(audioCaptureComB[0])
+        if(audioCaptureComB is not None):
+            curIndex = int(audioCaptureComB)
             if(self.audioCaptureComBox.currentIndex() != curIndex):
                 self.audioCaptureComBox.setCurrentIndex(curIndex)
 
         audioPlayComB = self.rdcCtl.getValueByKeyStr('audiomode:i:')
-        if(len(audioPlayComB) > 0):
-            curIndex = int(audioPlayComB[0])
+        if(audioPlayComB is not None):
+            curIndex = int(audioPlayComB)
             if(self.audioPlayComBox.currentIndex() != curIndex):
                 self.audioPlayComBox.setCurrentIndex(curIndex)
 
-        keyComB = self.rdcCtl.getValueByKeyStr('keyboardhook:i:' )
-        if(len(keyComB) > 0):
-            curIndex = int(keyComB[0])
+        keyComB = self.rdcCtl.getValueByKeyStr('keyboardhook:i:')
+        if(keyComB is not None):
+            curIndex = int(keyComB)
             if(self.keyComBox.currentIndex() != curIndex):
                 self.keyComBox.setCurrentIndex(curIndex)
 
         smartCardChkB = self.rdcCtl.getValueByKeyStr('redirectsmartcards:i:')
-        if(len(smartCardChkB) > 0):
-            if(str(self.smartCardCheckBox.checkState()) != smartCardChkB[0]):
-                self.smartCardCheckBox.setCheckState(QtCore.Qt.Unchecked if smartCardChkB[
-                                                     0] == '0' else QtCore.Qt.Checked)
+        if(smartCardChkB is not None):
+            if(str(self.smartCardCheckBox.checkState()) != smartCardChkB):
+                self.smartCardCheckBox.setCheckState(
+                    QtCore.Qt.Unchecked if smartCardChkB == '0' else QtCore.Qt.Checked)
 
         portChkB = self.rdcCtl.getValueByKeyStr('redirectcomports:i:')
-        if(len(portChkB) > 0):
-            if(str(self.portCheckBox.checkState()) != portChkB[0]):
-                self.portCheckBox.setCheckState(QtCore.Qt.Unchecked if portChkB[
-                                                0] == '0' else QtCore.Qt.Checked)
+        if(portChkB is not None):
+            if(str(self.portCheckBox.checkState()) != portChkB):
+                self.portCheckBox.setCheckState(
+                    QtCore.Qt.Unchecked if portChkB == '0' else QtCore.Qt.Checked)
 
         drivesChkB = self.rdcCtl.getValueByKeyStr('drivestoredirect:s:')
-        if(len(drivesChkB) > 0):
-            if(drivesChkB[0] == '*'):
+        if(drivesChkB is not None):
+            if(drivesChkB == '*'):
                 if(self.drives.checkState(0) == QtCore.Qt.Unchecked):
                     self.drives.setCheckState(0, QtCore.Qt.Checked)
                     self.setQTreeWidgetItems(self.drives, QtCore.Qt.Checked)
@@ -371,8 +481,8 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 self.setQTreeWidgetItems(self.drives, QtCore.Qt.Unchecked)
 
         devicesChkB = self.rdcCtl.getValueByKeyStr('devicestoredirect:s:')
-        if(len(devicesChkB) > 0):
-            if(devicesChkB[0] == '*'):
+        if(devicesChkB is not None):
+            if(devicesChkB == '*'):
                 if(self.devices.checkState(0) == QtCore.Qt.Unchecked):
                     self.devices.setCheckState(0, QtCore.Qt.Checked)
                     self.setQTreeWidgetItems(self.devices, QtCore.Qt.Checked)
@@ -380,6 +490,134 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             if(self.devices.checkState(0) == QtCore.Qt.Checked):
                 self.devices.setCheckState(0, QtCore.Qt.Unchecked)
                 self.setQTreeWidgetItems(self.devices, QtCore.Qt.Unchecked)
+
+        colorComB = self.rdcCtl.getValueByKeyStr('session bpp:i:')
+        if(colorComB is not None):
+            curVal = int(colorComB)
+            if(curVal != self.getColorComVal(self.colorComboBox.currentIndex())):
+                self.colorComboBox.setCurrentIndex((curVal - 16) / 8 + 1)
+
+        connTypeComB = self.rdcCtl.getValueByKeyStr('connection type:i:')
+        if(connTypeComB is not None):
+            curIndex = int(connTypeComB) - 1
+            if(curIndex != self.connTypeComboBox.currentIndex()):
+                self.connTypeComboBox.setCurrentIndex(curIndex)
+
+        backChkB = self.rdcCtl.getValueByKeyStr('disable wallpaper:i:')
+        if(backChkB is not None):
+            if((self.backCheckBox.checkState() == QtCore.Qt.Checked and backChkB == '1')or (self.backCheckBox.checkState() == QtCore.Qt.Unchecked and backChkB == '0')):
+                self.backCheckBox.setCheckState(
+                    QtCore.Qt.Checked if backChkB == '0' else QtCore.Qt.Unchecked)
+
+        fontChkB = self.rdcCtl.getValueByKeyStr('allow font smoothing:i:')
+        if(fontChkB is not None):
+            if((self.fontCheckBox.checkState() == QtCore.Qt.Checked and fontChkB == '0')or (self.fontCheckBox.checkState() == QtCore.Qt.Unchecked and fontChkB == '1')):
+                self.fontCheckBox.setCheckState(
+                    QtCore.Qt.Checked if fontChkB == '1' else QtCore.Qt.Unchecked)
+        layoutChkB = self.rdcCtl.getValueByKeyStr(
+            'allow desktop composition:i:')
+        if(layoutChkB is not None):
+            if((self.backCssCheckBox.checkState() == QtCore.Qt.Checked and layoutChkB == '0')or (self.backCssCheckBox.checkState() == QtCore.Qt.Unchecked and layoutChkB == '1')):
+                self.backCssCheckBox.setCheckState(
+                    QtCore.Qt.Checked if layoutChkB == '1' else QtCore.Qt.Unchecked)
+
+        dragChkB = self.rdcCtl.getValueByKeyStr('disable full window drag:i:')
+        if(dragChkB is not None):
+            if((self.dragCheckBox.checkState() == QtCore.Qt.Checked and dragChkB == '1')or (self.dragCheckBox.checkState() == QtCore.Qt.Unchecked and dragChkB == '0')):
+                self.dragCheckBox.setCheckState(
+                    QtCore.Qt.Checked if dragChkB == '0' else QtCore.Qt.Unchecked)
+
+        menuChkB = self.rdcCtl.getValueByKeyStr('disable menu anims:i:')
+        if(menuChkB is not None):
+            if((self.menuCheckBox.checkState() == QtCore.Qt.Checked and menuChkB == '1')or (self.menuCheckBox.checkState() == QtCore.Qt.Unchecked and menuChkB == '0')):
+                self.menuCheckBox.setCheckState(
+                    QtCore.Qt.Checked if menuChkB == '0' else QtCore.Qt.Unchecked)
+
+        viewChkB = self.rdcCtl.getValueByKeyStr('disable themes:i:')
+        if(viewChkB is not None):
+            if((self.viewCheckBox.checkState() == QtCore.Qt.Checked and viewChkB == '1')or (self.viewCheckBox.checkState() == QtCore.Qt.Unchecked and viewChkB == '0')):
+                self.viewCheckBox.setCheckState(
+                    QtCore.Qt.Checked if viewChkB == '0' else QtCore.Qt.Unchecked)
+
+        bitMapChkB = self.rdcCtl.getValueByKeyStr(
+            'bitmapcachepersistenable:i:')
+        if(bitMapChkB is not None):
+            if((self.bitMapCheckBox.checkState() == QtCore.Qt.Checked and bitMapChkB == '0')or (self.bitMapCheckBox.checkState() == QtCore.Qt.Unchecked and bitMapChkB == '1')):
+                self.bitMapCheckBox.setCheckState(
+                    QtCore.Qt.Checked if bitMapChkB == '1' else QtCore.Qt.Unchecked)
+
+        wid = self.rdcCtl.getValueByKeyStr(
+            'desktopwidth:i:')
+        hig = self.rdcCtl.getValueByKeyStr(
+            'desktopheight:i:')
+        if wid is not None and hig is not None:
+            val = int(wid) + int(hig)
+            if val in self.metricsInvertMap.keys():
+                self.horizontalSlider.setValue(self.metricsInvertMap[val])
+
+    def getColorComVal(self, index):  # 0:15 1:16 2:24 3:32
+        if(index == 0):
+            return 15
+        else:
+            return 15 + 1 + (index - 1) * 8
+
+    def getMinIndexUp(self, val, numSet):
+        low = 0
+        high = len(numSet) - 1
+        while low <= high:
+            mid = (low + high) / 2
+            midVal = numSet[mid]
+            if(midVal < val):
+                low = mid + 1
+            elif midVal > val:
+                high = mid - 1
+            else:
+                return mid
+        return low - 1
+
+    def initMetics(self):
+        width = []
+        width.append(640)
+        width.append(800)
+        width.append(1024)
+        width.append(1280)
+        width.append(1366)
+        width.append(1440)
+        width.append(1600)
+        width.append(1680)
+        width.append(1920)
+        height = []
+        height.append(480)
+        height.append(600)
+        height.append(720)
+        height.append(768)
+        height.append(800)
+        height.append(900)
+        height.append(1024)
+        height.append(1050)
+        height.append(1080)
+
+        wi = win32api.GetSystemMetrics(0)
+        hi = win32api.GetSystemMetrics(1)
+        wIndex = self.getMinIndexUp(wi, width)
+        hIndex = self.getMinIndexUp(hi, height)
+        self.metricsMap = []
+        self.metricsInvertMap = {}
+        for i in range(0, wIndex + 1):
+            if(i <= hIndex):
+                self.metricsMap.append([width[i], height[i]])
+                self.metricsInvertMap[width[i] + height[i]] = i
+            else:
+                self.metricsMap.append([width[i], height[hIndex]])
+                self.metricsInvertMap[width[i] + height[hIndex]] = i
+        if wIndex < hIndex:
+            for i in(wIndex + 1, hIndex):
+                self.metricsMap.append([width[wIndex], height[i]])
+                self.metricsInvertMap[width[wIndex] + height[i]] = i
+
+        if(width[wIndex] != wi or height[hIndex] != hi):
+            self.metricsMap.append([wi, hi])
+            self.metricsInvertMap[wi + hi] = len(self.metricsMap - 1)
 
     def setQTreeWidgetItems(self, item, state):
         itemSize = item.childCount()

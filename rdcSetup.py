@@ -17,7 +17,7 @@ setup(
       name = 'PyQt Demo',
       version = '1.0',
       windows = [
-      {'script':'rdcCtl.py','icon_resources':[(0,'rdc.ico')]}], 
+      {'script':'rdcView.py','icon_resources':[(0,'rdc.ico')]}], 
       zipfile = None,
       options = {'py2exe': py2exe_options}
       )

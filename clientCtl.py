@@ -6,7 +6,7 @@ import json
 class clientCtl():
 
     def __init__(self):
-        self.HOST = '127.0.0.1'
+        self.HOST = ''
         self.PORT = 8894
         self.IP=client.getSelfIP()
         self.outIP=client.getOutIP()

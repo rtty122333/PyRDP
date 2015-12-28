@@ -28,7 +28,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         Ui_QDialog.__init__(self)
         self.setupUi(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("indexRdp")
-
+        self.configPath='config.ini'
         self.clientCtl=clientCtl.clientCtl()
         #self.setStyleSheet("background-color:#2C3E50")
         self.statusLabel.clear()
@@ -39,6 +39,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.roleComboBox.addItem(u'管理员')
 
         self.initWin()
+        self.initConfig()
         
         #self.loginWidget.hide()
         self.quitPushButton.clicked.connect(self.closeEvent)
@@ -59,8 +60,18 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.loginWidget.setStyleSheet("QWidget{background-color:#ffff00}");
         self.indexWidget.hide()
 
+    def initConfig(self):
+        settings = QtCore.QSettings(self.configPath, QtCore.QSettings.IniFormat)  # 当前目录的INI文件
+        settings.beginGroup('server')
+        settings.setIniCodec('UTF-8')
+        host = settings.value(r'host').toString()
+        port = settings.value(r'port').toString()
+        self.clientCtl.initServerSetting(host,int(port))
+        settings.endGroup()
+
+
     def settingFunc(self):
-        self.settingDialog=setting.SettingWidget(self.clientCtl)#setWidget.SetWidget(self.clientCtl)#setting.SettingDialog()#
+        self.settingDialog=setting.SettingWidget(self)#setWidget.SetWidget(self.clientCtl)#setting.SettingDialog()#
         self.settingDialog.show()
 
     def queryRoleCb(self,err,msg):
@@ -112,10 +123,12 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if self.isSthWrong(err,msg,self.statusLabel1):
             pass
         else:
-            QtGui.QWidget().setLayout(self.vmsWidget.layout())
             self.refreshVms(msg['user']['vmMap'])
 
     def refreshVms(self,vms):
+        if self.vmsWidget.layout():
+            QtGui.QWidget().setLayout(self.vmsWidget.layout())
+
         hBox = QtGui.QHBoxLayout()
 
         widget = QtGui.QWidget()

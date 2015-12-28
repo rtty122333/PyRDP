@@ -15,11 +15,12 @@ Set_QWidget, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 class SettingWidget(QtGui.QWidget, Set_QWidget):
 
-    def __init__(self,clientCtl):
+    def __init__(self,parent):
         QtGui.QWidget.__init__(self)
         Set_QWidget.__init__(self)
         self.setupUi(self)
-        self.clientCtl=clientCtl
+        self.clientCtl=parent.clientCtl
+        self.configPath=parent.configPath
         self.setSurePBtn.clicked.connect(self.settingFunc)
         self.setCancelPBtn.clicked.connect(self.cancelFunc)
         self.setFixedSize(self.width(), self.height()); 
@@ -27,6 +28,8 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
         icon.addPixmap(QtGui.QPixmap('setting.png'),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
+        self.hostLineEdit.setText(self.clientCtl.HOST)
+        self.portLineEdit.setText(str(self.clientCtl.PORT))
 
     def settingFunc(self):
         if len(self.hostLineEdit.text())==0 or len(self.portLineEdit.text())==0:
@@ -34,6 +37,7 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
         else:
             if(self.isValidIP(self.hostLineEdit.text())):
                 self.clientCtl.initServerSetting(self.hostLineEdit.text(),int(self.portLineEdit.text()))
+                self.updateConfig()
                 self.close()
             else:
                 self.setStatusLabel.setText(u'请输入合法的IP地址。')
@@ -49,6 +53,13 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
             '^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$')
         return reip.match(ipStr)
 
+    def updateConfig(self):
+        settings = QtCore.QSettings(self.configPath, QtCore.QSettings.IniFormat)  # 当前目录的INI文件
+        settings.beginGroup('server')
+        settings.setIniCodec('UTF-8')
+        s1 = settings.setValue(r'host', self.hostLineEdit.text())
+        s2 = settings.setValue(r'port', self.portLineEdit.text())
+        settings.endGroup()
 
     # def closeEvent(self, event):
     #     sys.exit()

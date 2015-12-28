@@ -105,13 +105,14 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.clientCtl.queryRole(self.queryRoleCb)
 
     def refreshIndex(self):
-        self.indexWidget.close()
         self.clientCtl.queryUser(str(self.userNameLineEdit.text()),self.queryUserCb)
+
 
     def queryUserCb(self,err,msg):
         if self.isSthWrong(err,msg,self.statusLabel1):
             pass
         else:
+            QtGui.QWidget().setLayout(self.vmsWidget.layout())
             self.refreshVms(msg['user']['vmMap'])
 
     def refreshVms(self,vms):
@@ -123,19 +124,16 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         size=len(vms)
         xSize=5
         ySize=(size-1)/xSize+1
-        print 'ySize',ySize
         grid.setVerticalSpacing(xSize)
         grid.setHorizontalSpacing(ySize)
         
         vmWidth=(self.vmsWidget.width()-150)/5
-        vmHight=vmWidth*3/2#self.vmsWidget.height()/xSize;
-        print vmWidth,vmHight
+        vmHight=vmWidth*3/2#self.vmsWidget.height()/xSize
         index=0
         for xIndex in range(0,10):
             for yIndex in range(0,xSize):
                 if index<size:
                     text=u'用户名：'+vms[index]['userName']+'\r\n'+u'虚拟机：'+vms[index]['vmName']
-                    print 'text',text
                     widgetTmp=cmpWidget.cmpWidget(vmWidth,vmHight,text,'cmp.png',vms[index]['ip'],vms[index]['vmId'])
                     grid.addWidget(widgetTmp,xIndex,yIndex)
 
@@ -151,10 +149,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         scroll.setWidget(widget)
         hBox.addWidget(scroll)
         self.vmsWidget.setLayout(hBox)
-        
 
-    def mstscFunc(self,event):
-        print 'name',event.label().text()
     def isSthWrong(self,err,msg,itemLable):
         if err is None:
             if msg['info']=='ok':

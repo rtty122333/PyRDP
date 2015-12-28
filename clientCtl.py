@@ -6,7 +6,7 @@ import json
 class clientCtl():
 
     def __init__(self):
-        self.HOST = ''
+        self.HOST = '127.0.0.1'
         self.PORT = 8894
         self.IP=client.getSelfIP()
         self.outIP=client.getOutIP()
@@ -39,6 +39,6 @@ class clientCtl():
 
     def cbTmp(self,err,msg,cb):
         if msg is None:
-            cb(err,None)
+            return cb(err,None)
         else:
-            cb(err,json.loads(msg))
+            return cb(err,json.loads(msg))

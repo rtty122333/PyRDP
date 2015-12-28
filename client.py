@@ -12,16 +12,14 @@ def client(msg,host,port,finalCb,cb):
         sock.connect((host,port))
         time.sleep(2)
         sock.send(msg)
-        sock.settimeout(10)
+        sock.settimeout(5)
         rst=sock.recv(1024)
-        print rst
         return cb(None,rst,finalCb)
     except:
         #print 'fail to connect to ther server '+host+':'+str(port)
         return cb('fail to connect to ther server '+host+':'+str(port),None,finalCb)
     #time.sleep(10)
     finally:
-        print 'close'
         sock.close()
 
 def getSelfIP():

@@ -43,84 +43,39 @@
      <string>登录</string>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>120</y>
-      <width>291</width>
-      <height>68</height>
-     </rect>
+   <widget class="QLabel" name="statusLabel">
+    <property name="enabled">
+     <bool>false</bool>
     </property>
-    <layout class="QGridLayout" name="infoGridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="userNameLabel">
-       <property name="font">
-        <font>
-         <family>Agency FB</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>用户名</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="userNameLineEdit">
-       <property name="font">
-        <font>
-         <family>Times New Roman</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="pwdLabel">
-       <property name="font">
-        <font>
-         <family>Agency FB</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>密码</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="pwdLineEdit">
-       <property name="font">
-        <font>
-         <family>Times New Roman</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>194</x>
-      <y>70</y>
+      <x>160</x>
+      <y>200</y>
       <width>151</width>
-      <height>32</height>
+      <height>20</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="roleLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinAndMaxSize</enum>
-     </property>
-     <item>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>64</x>
+      <y>90</y>
+      <width>249</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
       <widget class="QLabel" name="roleLabel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -139,33 +94,50 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QComboBox" name="roleComboBox">
-       <property name="font">
-        <font>
-         <family>Agency FB</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-      </widget>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QComboBox" name="roleComboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <family>Agency FB</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="loginRefreshPBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>刷新</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>220</y>
-      <width>204</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="btnLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinAndMaxSize</enum>
-     </property>
-     <item>
-      <widget class="QPushButton" name="quitPushButton">
+     <item row="1" column="0">
+      <widget class="QLabel" name="userNameLabel">
        <property name="font">
         <font>
          <family>Agency FB</family>
@@ -173,7 +145,74 @@
         </font>
        </property>
        <property name="text">
-        <string>退出</string>
+        <string>用户名</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="userNameLineEdit">
+       <property name="font">
+        <font>
+         <family>Times New Roman</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="pwdLabel">
+       <property name="font">
+        <font>
+         <family>Agency FB</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>密码</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="pwdLineEdit">
+       <property name="font">
+        <font>
+         <family>Times New Roman</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>220</y>
+      <width>204</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
+     <item>
+      <widget class="QPushButton" name="loginPushButton">
+       <property name="font">
+        <font>
+         <family>Agency FB</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>登录</string>
        </property>
       </widget>
      </item>
@@ -191,7 +230,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="loginPushButton">
+      <widget class="QPushButton" name="settingPBtn">
        <property name="font">
         <font>
          <family>Agency FB</family>
@@ -199,59 +238,11 @@
         </font>
        </property>
        <property name="text">
-        <string>登录</string>
+        <string>设置</string>
        </property>
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QLabel" name="statusLabel">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>270</y>
-      <width>231</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="loginRefreshPBtn">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>刷新</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="settingPBtn">
-    <property name="geometry">
-     <rect>
-      <x>304</x>
-      <y>20</y>
-      <width>41</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>设置</string>
-    </property>
    </widget>
   </widget>
   <widget class="QWidget" name="indexWidget" native="true">
@@ -278,30 +269,11 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-    <widget class="QPushButton" name="indexRefreshPBtn">
-     <property name="geometry">
-      <rect>
-       <x>810</x>
-       <y>10</y>
-       <width>61</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Agency FB</family>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>刷新</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="statusLabel1">
      <property name="geometry">
       <rect>
-       <x>726</x>
-       <y>40</y>
+       <x>750</x>
+       <y>10</y>
        <width>141</width>
        <height>20</height>
       </rect>
@@ -319,6 +291,7 @@
        <height>421</height>
       </rect>
      </property>
+     <zorder>loginWidget</zorder>
     </widget>
    </widget>
    <widget class="QWidget" name="widget" native="true">

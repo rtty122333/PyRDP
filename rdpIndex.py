@@ -42,14 +42,24 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
         self.initWin()
         self.initConfig()
-        
-        #self.loginWidget.hide()
-        self.quitPushButton.clicked.connect(self.closeEvent)
+        powerIcon = QtGui.QIcon()
+        powerPixMap=QtGui.QPixmap('power.png')
+        powerPixMap.scaled(50,50,QtCore.Qt.KeepAspectRatioByExpanding)
+        powerIcon.addPixmap(powerPixMap,
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.quitPushButton=QtGui.QPushButton(powerIcon,'',self)
+        self.quitPushButton.move(self.winWidth/10*9,self.winHight/10*9)
+        self.quitPushButton.clicked.connect(self.closeFunc)
         self.loginPushButton.clicked.connect(self.login)
         self.logoutPushButton.clicked.connect(self.logout)
         self.loginRefreshPBtn.clicked.connect(self.refreshLogin)
-        self.indexRefreshPBtn.clicked.connect(self.refreshIndex)
         self.settingPBtn.clicked.connect(self.settingFunc)
+
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showContextMenu)
+        self.contextMenu = QtGui.QMenu(self.vmsWidget)
+        self.connAction = self.contextMenu.addAction(u'刷新')
+        self.connAction.triggered.connect(self.refreshIndex)
 
         self.showFullScreen()
 
@@ -96,6 +106,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
     def logout(self):
         self.statusLabel.clear()
+        self.quitPushButton.show()
         self.indexWidget.hide()
         self.loginWidget.show()
         
@@ -106,6 +117,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         else:
             if msg['auth']=='success':
                 self.loginWidget.hide()
+                self.quitPushButton.hide()
                 self.loginUserLabel.setText(self.userNameLineEdit.text())
                 self.refreshVms(msg['user']['vmMap'])
                 self.indexWidget.show()
@@ -165,6 +177,10 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         hBox.addWidget(scroll)
         self.vmsWidget.setLayout(hBox)
 
+    def showContextMenu(self,pos):
+        self.contextMenu.move(self.pos() + pos)
+        self.contextMenu.show()
+
     def isSthWrong(self,err,msg,itemLable):
         if err is None:
             if msg['info']=='ok':
@@ -179,6 +195,16 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             # QtGui.QMessageBox.question(
             #     self, 'Message', u'连接失败,请稍后重试'+err, QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
             return True
+
+    def closeFunc(self):
+        shutdown=QtGui.QMessageBox()
+        shutdown.setWindowTitle(u'警告')
+        shutdown.setText(u'现在关闭此系统吗？')
+        yesBtn=shutdown.addButton(u"确定",QtGui.QMessageBox.AcceptRole)
+        noBtn=shutdown.addButton(u"取消",QtGui.QMessageBox.RejectRole)
+        shutdown.exec_()
+        if shutdown.clickedButton()==yesBtn:
+            self.close()
 
     def closeEvent(self, event):
         sys.exit()

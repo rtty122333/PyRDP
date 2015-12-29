@@ -44,7 +44,7 @@ class cmpWidget(QtGui.QWidget):
     def mouseDoubleClickEvent(self,event):
         
         reply=QtGui.QMessageBox()
-        reply.setWindowTitle(u'消息')
+        reply.setWindowTitle(u'提示')
         reply.setText(u'您正在连接机器\n'+self.text)
         yesBtn=reply.addButton(u"是",QtGui.QMessageBox.AcceptRole)
         noBtn=reply.addButton(u"否",QtGui.QMessageBox.RejectRole)

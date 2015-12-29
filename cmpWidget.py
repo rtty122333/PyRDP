@@ -7,13 +7,14 @@ import rdpConn
 
 class cmpWidget(QtGui.QWidget):
 
-    def __init__(self,parentPos, width, height, text, imgPath,ip,vmId):
+    def __init__(self,parentPos, width, height,imgPath,userName,vmName,ip,vmId):
 
         super(cmpWidget, self).__init__()
         self.parentPos=parentPos
         self.ip=ip
         self.vmId=vmId
-        self.text=text
+        self.userName=userName
+        self.text=u'用户名：'+userName+'\r\n'+u'虚拟机：'+vmName
         hVBox=QtGui.QVBoxLayout()
         self.setMinimumSize(width,height)
         
@@ -38,29 +39,25 @@ class cmpWidget(QtGui.QWidget):
         self.contextMenu = QtGui.QMenu(self)
         self.connAction = self.contextMenu.addAction(u'连接')
         self.connAction.triggered.connect(self.connHandler)
-        self.rdpConn=rdpConn.RDPDialog(self.ip)
-
+        self.rdpConn=rdpConn.RDPDialog(self.ip,self.userName)
 
     def mouseDoubleClickEvent(self,event):
-        '''
-        self.reply=QtGui.QMessageBox()
-        self.reply.setWindowTitle(u'消息')
-        self.reply.setText(u'您正在连接机器\n'+self.text)
-        self.reply.setStandardButtons(QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
-        self.reply.setButtonText(QtGui.QMessageBox.Yes,u"是")
-        self.reply.setButtonText(QtGui.QMessageBox.No,u"否")
-        #reply = QtGui.QMessageBox.question(self,u'消息',u'您正在连接机器\n'+self.text,QtGui.QMessageBox.Yes|QtGui.QMessageBox.No,QtGui.QMessageBox.No)
-        self.reply.show()
-        if self.reply==QtGui.QMessageBox.Yes:
+        
+        reply=QtGui.QMessageBox()
+        reply.setWindowTitle(u'消息')
+        reply.setText(u'您正在连接机器\n'+self.text)
+        yesBtn=reply.addButton(u"是",QtGui.QMessageBox.AcceptRole)
+        noBtn=reply.addButton(u"否",QtGui.QMessageBox.RejectRole)
+        reply.exec_()
+        if reply.clickedButton()==yesBtn:
             stdouterr = os.popen4(str('mstsc /v:' + self.ip))[1].read()
         else:
             event.ignore()
-        '''
-        reply = QtGui.QMessageBox.question(self,u'消息',u'您正在连接机器\n'+self.text,QtGui.QMessageBox.Yes|QtGui.QMessageBox.No,QtGui.QMessageBox.No)
-        if reply==QtGui.QMessageBox.Yes:
-            stdouterr = os.popen4(str('mstsc /v:' + self.ip))[1].read()
-        else:
-            event.ignore()
+        # reply = QtGui.QMessageBox.question(self,u'消息',u'您正在连接机器\n'+self.text,QtGui.QMessageBox.Yes|QtGui.QMessageBox.No,QtGui.QMessageBox.No)
+        # if reply==QtGui.QMessageBox.Yes:
+        #     stdouterr = os.popen4(str('mstsc /v:' + self.ip))[1].read()
+        # else:
+        #     event.ignore()
 
     def showContextMenu(self,pos):
         self.contextMenu.move(self.pos() + pos+self.parentPos)

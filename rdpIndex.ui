@@ -70,7 +70,7 @@
       <widget class="QLineEdit" name="userNameLineEdit">
        <property name="font">
         <font>
-         <family>Agency FB</family>
+         <family>Times New Roman</family>
          <pointsize>14</pointsize>
         </font>
        </property>
@@ -96,7 +96,7 @@
       <widget class="QLineEdit" name="pwdLineEdit">
        <property name="font">
         <font>
-         <family>Agency FB</family>
+         <family>Times New Roman</family>
          <pointsize>14</pointsize>
         </font>
        </property>
@@ -371,7 +371,7 @@
           </property>
           <property name="font">
            <font>
-            <family>Agency FB</family>
+            <family>Times New Roman</family>
             <pointsize>14</pointsize>
            </font>
           </property>

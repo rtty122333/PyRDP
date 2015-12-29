@@ -14,7 +14,7 @@ Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
-    def __init__(self,ip):
+    def __init__(self,ip,userName):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
         self.setupUi(self)
@@ -22,10 +22,13 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         # self.connBtn.clicked.connect(self.connectFunc)
         self.ip=ip
         self.cmpLineEdit.setText(self.ip)
+        self.accountTxtLable.setText(userName)
         self.cmpLineEdit.setEchoMode(QtGui.QLineEdit.Password)
         self.cmpLineEdit_2.setEchoMode(QtGui.QLineEdit.Password);
         self.cmpLineEdit.setReadOnly(True)
         self.cmpLineEdit_2.setReadOnly(True)
+        self.statusLabel.setStyleSheet("color:#ff0000")
+        self.statusLabel_2.setStyleSheet("color:#ff0000")
         self.optionWidget.hide()
         self.optionToolBtn.clicked.connect(self.toOptionDWidget)
         self.optionToolBtn_2.clicked.connect(self.toDefaultDWidget)
@@ -187,6 +190,7 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         text=str(self.cmpLineEdit.text())
         if len(text):
             self.cmpLineEdit_2.setText(text)
+        self.accountTxtLable_2.setText(self.accountTxtLable.text())
         self.resize(411, 346)
         self.defaultWidget.hide()
         self.optionWidget.show()
@@ -209,18 +213,22 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
     def defaultConnectFunc(self):
         if(self.isValidIP(self.cmpLineEdit.text())):
+            self.statusLabel.clear()
             self.runCommand('mstsc /v:' + self.cmpLineEdit.text())
         else:
-            QtGui.QMessageBox.question(
-                self, 'Message', u'请输入合法的IP地址', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
+            self.statusLabel.setText(u'请输入合法的IP地址')
+            # QtGui.QMessageBox.question(
+            #     self, 'Message', u'请输入合法的IP地址', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
 
     def optionConnectFunc(self):
         if(self.isValidIP(self.cmpLineEdit_2.text())):
             self.updataRdpFile()
+            self.statusLabel_2.clear()
             self.runCommand('mstsc ' + self.tmpFilePath)
         else:
-            QtGui.QMessageBox.question(
-                self, 'Message', u'请输入合法的IP地址', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
+            self.statusLabel_2.setText(u'请输入合法的IP地址')
+            # QtGui.QMessageBox.question(
+            #     self, 'Message', u'请输入合法的IP地址', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
 
     def openFile(self):
         fd = QtGui.QFileDialog(self).getOpenFileName()
@@ -619,6 +627,6 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    dialog = RDPDialog('192.168.160.18')
+    dialog = RDPDialog('192.168.160.18','hi')
     dialog.show()
     sys.exit(app.exec_())

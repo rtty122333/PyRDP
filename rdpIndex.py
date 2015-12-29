@@ -33,6 +33,8 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         #self.setStyleSheet("background-color:#2C3E50")
         self.statusLabel.clear()
         self.statusLabel.setScaledContents(True)
+        self.statusLabel.setStyleSheet("color:#ff0000")
+        self.statusLabel1.setStyleSheet("color:#ff0000")
         
         #clientCtl.queryRole(self.queryRoleCb)
         self.roleComboBox.addItem(u'普通用户')
@@ -127,6 +129,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.refreshVms(msg['user']['vmMap'])
 
     def refreshVms(self,vms):
+        self.statusLabel1.clear()
         if self.vmsWidget.layout():
             QtGui.QWidget().setLayout(self.vmsWidget.layout())
 
@@ -147,8 +150,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         for xIndex in range(0,10):
             for yIndex in range(0,xSize):
                 if index<size:
-                    text=u'用户名：'+vms[index]['userName']+'\r\n'+u'虚拟机：'+vms[index]['vmName']
-                    widgetTmp=cmpWidget.cmpWidget(self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,text,'cmp.png',vms[index]['ip'],vms[index]['vmId'])
+                    widgetTmp=cmpWidget.cmpWidget(self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,'cmp.png',vms[index]['userName'],vms[index]['vmName'],vms[index]['ip'],vms[index]['vmId'])
                     grid.addWidget(widgetTmp,xIndex,yIndex)
                 yIndex+=1
                 index+=1

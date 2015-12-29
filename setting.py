@@ -30,6 +30,7 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
         self.setWindowIcon(icon)
         self.hostLineEdit.setText(self.clientCtl.HOST)
         self.portLineEdit.setText(str(self.clientCtl.PORT))
+        self.setStatusLabel.setStyleSheet("color:#ff0000")
 
     def settingFunc(self):
         if len(self.hostLineEdit.text())==0 or len(self.portLineEdit.text())==0:

@@ -15,7 +15,7 @@ import setting
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
 
-qtCreatorFile = "rdcIndex.ui"
+qtCreatorFile = "rdpIndex.ui"
 
 Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
@@ -109,8 +109,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 self.indexWidget.show()
                 
             else:
-                QtGui.QMessageBox.question(
-                self, 'Message', u'错误的用户名或密码.', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
+                self.statusLabel.setText(u'错误的用户名或密码')
+                # QtGui.QMessageBox.question(
+                # self, 'Message', u'错误的用户名或密码.', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
 
     def refreshLogin(self):
         self.clientCtl.queryRole(self.queryRoleCb)
@@ -147,9 +148,8 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             for yIndex in range(0,xSize):
                 if index<size:
                     text=u'用户名：'+vms[index]['userName']+'\r\n'+u'虚拟机：'+vms[index]['vmName']
-                    widgetTmp=cmpWidget.cmpWidget(vmWidth,vmHight,text,'cmp.png',vms[index]['ip'],vms[index]['vmId'])
+                    widgetTmp=cmpWidget.cmpWidget(self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,text,'cmp.png',vms[index]['ip'],vms[index]['vmId'])
                     grid.addWidget(widgetTmp,xIndex,yIndex)
-
                 yIndex+=1
                 index+=1
             xIndex+=1
@@ -168,8 +168,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             if msg['info']=='ok':
                 return False
             else:
-                QtGui.QMessageBox.question(
-                self, 'Message', msg['desc'], QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
+                itemLable.setText(msg['desc'])
+                # QtGui.QMessageBox.question(
+                # self, 'Message', msg['desc'], QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
                 return True
         else:
             itemLable.setText(u'连接失败,请稍后重试.')

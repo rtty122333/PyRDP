@@ -24,6 +24,8 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         self.cmpLineEdit.setText(self.ip)
         self.cmpLineEdit.setEchoMode(QtGui.QLineEdit.Password)
         self.cmpLineEdit_2.setEchoMode(QtGui.QLineEdit.Password);
+        self.cmpLineEdit.setReadOnly(True)
+        self.cmpLineEdit_2.setReadOnly(True)
         self.optionWidget.hide()
         self.optionToolBtn.clicked.connect(self.toOptionDWidget)
         self.optionToolBtn_2.clicked.connect(self.toDefaultDWidget)

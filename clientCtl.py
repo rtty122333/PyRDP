@@ -37,8 +37,25 @@ class clientCtl():
         msg=clientPackHandler.queryRole(self.IP)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
+    def addUser(self,userName,password,role,cb):
+        msg=clientPackHandler.addUser(userName, password,role)
+        client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
+
+    def addVm(self,vmId,userName,vmName,ip,cb):
+        msg=clientPackHandler.addVm(vmId,userName,vmName,ip)
+        client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
+
+    def addUserVm(self,userName,vmId,cb):
+        msg=clientPackHandler.addUserVm(userName,vmId)
+        client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
+
+    def removeUserVm(self,vmId,cb):
+        msg=clientPackHandler.removeUserVm(vmId)
+        client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
+
     def cbTmp(self,err,msg,cb):
+        print 'cb err:',err,' msg:',msg
         if msg is None:
-            return cb(err,None)
+            return cb(err+' reply is null',None)
         else:
             return cb(err,json.loads(msg))

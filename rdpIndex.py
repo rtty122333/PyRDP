@@ -11,7 +11,6 @@ import json
 import math
 import cmpWidget
 import setting
-import filterEvent
 
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
@@ -57,7 +56,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.settingPBtn.clicked.connect(self.settingFunc)
 
         self.showFullScreen()
-        #eventFilter=filterEvent.Filter()
 
     def initWin(self):
 
@@ -137,8 +135,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
     def refreshVms(self,vms):
         self.statusLabel1.clear()
-        if self.vmsWidget.layout():
-            QtGui.QWidget().setLayout(self.vmsWidget.layout())
 
         #管理员
         if (self.roleComboBox.currentIndex()==1):
@@ -178,11 +174,14 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.vmsWidget.hide()
             self.adminVmsWidget.show()
         else:
-            self.vmsWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-            self.vmsWidget.customContextMenuRequested.connect(self.showVmsContextMenu)
-            self.vmsWidget.contextMenu = QtGui.QMenu(self.vmsWidget)
-            self.vmsWidget.connAction = self.vmsWidget.contextMenu.addAction(u'刷新')
-            self.vmsWidget.connAction.triggered.connect(self.refreshIndex)
+            if self.vmsWidget.layout():
+                QtGui.QWidget().setLayout(self.vmsWidget.layout())
+            else:
+                self.vmsWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+                self.vmsWidget.customContextMenuRequested.connect(self.showVmsContextMenu)
+                self.vmsWidget.contextMenu = QtGui.QMenu(self.vmsWidget)
+                self.vmsWidget.connAction = self.vmsWidget.contextMenu.addAction(u'刷新')
+                self.vmsWidget.connAction.triggered.connect(self.refreshIndex)
             
             hBox = QtGui.QHBoxLayout()
 
@@ -297,7 +296,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         shutdown.exec_()
         if shutdown.clickedButton()==yesBtn:
             self.close()
-
 
     def isValidIP(self,ipStr):
         if(len(ipStr) < 8):

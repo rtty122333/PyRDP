@@ -1,5 +1,5 @@
-import client
-import clientPackHandler
+from socket import client
+from socket import clientPackHandler
 import json
 
 

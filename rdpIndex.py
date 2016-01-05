@@ -3,10 +3,10 @@ import re
 import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
-import rdcCtl
+from control import rdcCtl
 import win32api
 import ctypes
-import clientCtl
+from control import clientCtl
 import json
 import math
 import cmpWidget
@@ -15,7 +15,7 @@ import setting
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
 
-qtCreatorFile = "rdpIndex.ui"
+qtCreatorFile = "ui/rdpIndex.ui"
 
 Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
@@ -43,7 +43,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.initWin()
         self.initConfig()
         powerIcon = QtGui.QIcon()
-        powerPixMap=QtGui.QPixmap('power.png')
+        powerPixMap=QtGui.QPixmap('img/power.png')
         powerPixMap.scaled(50,50,QtCore.Qt.KeepAspectRatioByExpanding)
         powerIcon.addPixmap(powerPixMap,
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -158,16 +158,16 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 txt=item['userName']
                 userItem = QtGui.QTreeWidgetItem(self.vmsTreeWidget)
                 userItem.setText(0, txt)
-                userItem.setIcon(0,QtGui.QIcon("user.png"))
+                userItem.setIcon(0,QtGui.QIcon("img/user.png"))
                 for index in range(0,len(item['vmMap'])):
                     vm=item['vmMap'][index]
                     vmTxt=vm['vmId']+' '+vm['userName']+' '+vm['vmName']+' '+vm['ip']
                     vmItem = QtGui.QTreeWidgetItem(userItem)
                     vmItem.setText(0, vmTxt)
                     if vm['state']==2:
-                        vmItem.setIcon(0,QtGui.QIcon("cmpOnline.png"));
+                        vmItem.setIcon(0,QtGui.QIcon("img/cmpOnline.png"));
                     else:
-                        vmItem.setIcon(0,QtGui.QIcon("cmpOffline.png"));
+                        vmItem.setIcon(0,QtGui.QIcon("img/cmpOffline.png"));
                     userItem.addChild(vmItem)
                 self.usersVmsMap[userId]=userItem
                 self.vmsTreeWidgetItems.addChild(userItem)
@@ -200,7 +200,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             for xIndex in range(0,10):
                 for yIndex in range(0,xSize):
                     if index<size:
-                        widgetTmp=cmpWidget.cmpWidget(self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,'cmp.png',vms[index]['userName'],vms[index]['vmName'],vms[index]['ip'],vms[index]['vmId'])
+                        widgetTmp=cmpWidget.cmpWidget(self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,'img/cmp.png',vms[index]['userName'],vms[index]['vmName'],vms[index]['ip'],vms[index]['vmId'])
                         grid.addWidget(widgetTmp,xIndex,yIndex)
                     yIndex+=1
                     index+=1
@@ -256,7 +256,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             txt=msg['content']['userName']
             userItem = QtGui.QTreeWidgetItem(self.vmsTreeWidget)
             userItem.setText(0, txt)
-            userItem.setIcon(0,QtGui.QIcon("user.png"))
+            userItem.setIcon(0,QtGui.QIcon("img/user.png"))
             self.usersVmsMap[msg['content']['userId']]=userItem
             self.vmsTreeWidgetItems.addChild(userItem)
 
@@ -268,7 +268,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             userItem = self.usersVmsMap['0']
             vmItem = QtGui.QTreeWidgetItem(userItem)
             vmItem.setText(0, vmTxt)
-            vmItem.setIcon(0,QtGui.QIcon("cmpOffline.png"));
+            vmItem.setIcon(0,QtGui.QIcon("img/cmpOffline.png"));
             userItem.addChild(vmItem)
 
     def isSthWrong(self,err,msg,itemLable):

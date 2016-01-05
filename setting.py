@@ -3,12 +3,12 @@ import re
 import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
-import clientCtl
+from control import clientCtl
 
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
 
-qtCreatorFile = "setting.ui"
+qtCreatorFile = "ui/setting.ui"
 
 Set_QWidget, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
@@ -25,7 +25,7 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
         self.setCancelPBtn.clicked.connect(self.cancelFunc)
         self.setFixedSize(self.width(), self.height()); 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap('setting.png'),
+        icon.addPixmap(QtGui.QPixmap('img/setting.png'),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
         self.hostLineEdit.setText(self.clientCtl.HOST)

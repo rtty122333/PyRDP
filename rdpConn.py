@@ -3,11 +3,11 @@ import re
 import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
-import rdcCtl
+from control import rdcCtl
 import win32api
 import ctypes
 
-qtCreatorFile = "rdcD.ui"
+qtCreatorFile = "ui/rdcD.ui"
 
 Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
@@ -46,7 +46,7 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
         self.initEquipConent()
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap('rdc.ico'),
+        icon.addPixmap(QtGui.QPixmap('img/rdc.ico'),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
         self.initDeskSize()

@@ -28,7 +28,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         Ui_QDialog.__init__(self)
         self.setupUi(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("indexRdp")
-        self.configPath='config.ini'
+        self.configPath='config/config.ini'
         self.clientCtl=clientCtl.clientCtl()
         #self.setStyleSheet("background-color:#2C3E50")
         self.statusLabel.clear()

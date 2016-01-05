@@ -53,7 +53,7 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
         self.resize(391, 151)
         #self.showFullScreen()
-        self.defaultRdpPath = os.getcwd() + "\\.tmpRdp.rdp"
+        self.defaultRdpPath = os.getcwd() + "\\config\\.tmpRdp.rdp"
         self.tmpFileFolder = os.getcwd() + '\\tmp'
         self.rdpFilePath = ''
         self.tmpFilePath = ''

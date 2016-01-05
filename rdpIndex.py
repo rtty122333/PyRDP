@@ -152,7 +152,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 self.addUserLabel.setStyleSheet("color:#ff0000")
                 self.addVmLabel.setStyleSheet("color:#ff0000")
 
-            self.vmsTreeWidgetItems=QtGui.QTreeWidgetItem(self.vmsTreeWidget)
+
             for userId in vms.keys():
                 item=vms[userId]
                 txt=item['userName']
@@ -170,7 +170,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                         vmItem.setIcon(0,QtGui.QIcon("img/cmpOffline.png"));
                     userItem.addChild(vmItem)
                 self.usersVmsMap[userId]=userItem
-                self.vmsTreeWidgetItems.addChild(userItem)
             self.vmsWidget.hide()
             self.adminVmsWidget.show()
         else:
@@ -258,7 +257,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             userItem.setText(0, txt)
             userItem.setIcon(0,QtGui.QIcon("img/user.png"))
             self.usersVmsMap[msg['content']['userId']]=userItem
-            self.vmsTreeWidgetItems.addChild(userItem)
 
     def addVmCb(self,err,msg):
         if self.isSthWrong(err,msg,self.addVmLabel):

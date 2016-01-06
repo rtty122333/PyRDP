@@ -48,6 +48,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         powerIcon.addPixmap(powerPixMap,
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.quitPushButton=QtGui.QPushButton(powerIcon,'',self)
+	self.quitPushButton.setIconSize(QtCore.QSize(30,30))
         self.quitPushButton.move(self.winWidth/10*9,self.winHight/10*9)
         self.quitPushButton.clicked.connect(self.closeFunc)
         self.loginPushButton.clicked.connect(self.login)

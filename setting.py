@@ -4,6 +4,7 @@ import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
 from control import clientCtl
+from control import public
 
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
@@ -36,23 +37,15 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
         if len(self.hostLineEdit.text())==0 or len(self.portLineEdit.text())==0:
             self.setStatusLabel.setText(u'请输入完整信息。')
         else:
-            if(self.isValidIP(self.hostLineEdit.text())):
+            if(public.isValidIP(self.hostLineEdit.text())):
                 self.clientCtl.initServerSetting(self.hostLineEdit.text(),int(self.portLineEdit.text()))
                 self.updateConfig()
                 self.close()
             else:
                 self.setStatusLabel.setText(u'请输入合法的IP地址。')
                 
-
     def cancelFunc(self):
         self.close()
-
-    def isValidIP(self,ipStr):
-        if(len(ipStr) < 8):
-            return False
-        reip = re.compile(
-            '^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$')
-        return reip.match(ipStr)
 
     def updateConfig(self):
         settings = QtCore.QSettings(self.configPath, QtCore.QSettings.IniFormat)  # 当前目录的INI文件
@@ -61,6 +54,3 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
         s1 = settings.setValue(r'host', self.hostLineEdit.text())
         s2 = settings.setValue(r'port', self.portLineEdit.text())
         settings.endGroup()
-
-    # def closeEvent(self, event):
-    #     sys.exit()

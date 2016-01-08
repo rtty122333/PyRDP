@@ -29,6 +29,10 @@ class clientCtl():
         msg=clientPackHandler.queryUser(userName)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
+    def queryUserInfo(self,userId,cb):
+        msg=clientPackHandler.queryUserInfo(userId)
+        client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
+
     def queryVm(self,vmId,cb):
         msg=clientPackHandler.queryVm(vmId)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
@@ -45,16 +49,16 @@ class clientCtl():
         msg=clientPackHandler.addVm(vmId,userName,vmName,ip)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def addUserVm(self,userName,vmId,cb):
-        msg=clientPackHandler.addUserVm(userName,vmId)
+    def addUserVm(self,userId,vmId,cb):
+        msg=clientPackHandler.addUserVm(userId,vmId)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def removeUserVm(self,vmId,cb):
-        msg=clientPackHandler.removeUserVm(vmId)
+    def removeUserVm(self,vmId,state,userId,cb):
+        msg=clientPackHandler.removeUserVm(vmId,state,userId)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
     def cbTmp(self,err,msg,cb):
-        print 'cb err:',err,' msg:',msg
+        # print 'cb err:',err,' msg:',msg
         if msg is None:
             return cb(err+' reply is null',None)
         else:

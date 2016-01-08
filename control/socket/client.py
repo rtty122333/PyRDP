@@ -8,6 +8,7 @@ assert 'SYSTEMROOT' in os.environ
 
 def client(msg,host,port,finalCb,cb):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    rst=''
     try:
         sock.connect((host,port))
         time.sleep(2)

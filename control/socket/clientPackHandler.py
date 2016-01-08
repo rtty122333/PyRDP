@@ -15,6 +15,13 @@ def queryUser(userName):
     content['userName']=userName;
     msg['content']=content;
     return msg;
+def queryUserInfo(userId):
+    msg = {};
+    msg['type'] = 'queryUserInfo';
+    content = {};
+    content['userId']=userId;
+    msg['content']=content;
+    return msg;
 def queryVm(vmId):
     msg = {};
     msg['type'] = 'queryVm';
@@ -51,19 +58,21 @@ def addVm(vmId,userName,vmName,ip):
     msg['content']=content;
     return msg;
 
-def addUserVm(userName,vmId):
+def addUserVm(userId,vmId):
     msg = {};
     msg['type'] = 'addUserVm';
     content = {};
-    content['userName']=userName;
+    content['userId']=userId;
     content['vmId']=vmId;
     msg['content']=content;
     return msg;
     
-def removeUserVm(vmId):
+def removeUserVm(vmId,state,userId):
     msg = {};
     msg['type'] = 'removeUserVm';
     content = {};
     content['vmId']=vmId;
+    content['state']=state;
+    content['userId']=userId;
     msg['content']=content;
     return msg;

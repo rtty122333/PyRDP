@@ -6,6 +6,7 @@ from PyQt4 import QtCore, QtGui, uic
 from control import rdcCtl
 import win32api
 import ctypes
+from control import public
 
 qtCreatorFile = "ui/rdcD.ui"
 
@@ -19,7 +20,6 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         Ui_QDialog.__init__(self)
         self.setupUi(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
-        # self.connBtn.clicked.connect(self.connectFunc)
         self.ip=ip
         self.cmpLineEdit.setText(self.ip)
         self.accountTxtLable.setText(userName)
@@ -34,8 +34,7 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         self.optionToolBtn_2.clicked.connect(self.toDefaultDWidget)
         self.connBtn.clicked.connect(self.defaultConnectFunc)
         self.connBtn_2.clicked.connect(self.optionConnectFunc)
-        #self.setGeometry(300, 300, 410, 180)
-        #self.setFixedSize(self.width(), self.height())
+        # self.setFixedSize(self.width(), self.height())
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.openBtn.clicked.connect(self.openFile)
         self.saveBtn.clicked.connect(self.saveFile)
@@ -52,7 +51,6 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         self.initDeskSize()
 
         self.resize(391, 151)
-        #self.showFullScreen()
         self.defaultRdpPath = os.getcwd() + "\\config\\.tmpRdp.rdp"
         self.tmpFileFolder = os.getcwd() + '\\tmp'
         self.rdpFilePath = ''
@@ -63,10 +61,6 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
         self.initTmpFolder()
 
-        # print self.colorComboBox.itemText(0).extracomment
-        #self.setGeometry(300, 300, 250, 150)
-        # self.connect(self.accountEdit, SIGNAL("returnPressed(void)"),
-        #              self.runCommand
     def initTmpFolder(self):
         if(os.path.isdir(self.tmpFileFolder)):
             pass
@@ -207,28 +201,21 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
     def runCommand(self, cmdStr):
         stdouterr = os.popen4(str(cmdStr))[1].read()
-        # print '--'+stdouterr+'--'
-        # if(len(stdouterr)==0):
-        #     self.close()
 
     def defaultConnectFunc(self):
-        if(self.isValidIP(self.cmpLineEdit.text())):
+        if(public.isValidIP(self.cmpLineEdit.text())):
             self.statusLabel.clear()
             self.runCommand('mstsc /v:' + self.cmpLineEdit.text())
         else:
             self.statusLabel.setText(u'请输入合法的IP地址')
-            # QtGui.QMessageBox.question(
-            #     self, 'Message', u'请输入合法的IP地址', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
 
     def optionConnectFunc(self):
-        if(self.isValidIP(self.cmpLineEdit_2.text())):
+        if(public.isValidIP(self.cmpLineEdit_2.text())):
             self.updataRdpFile()
             self.statusLabel_2.clear()
             self.runCommand('mstsc ' + self.tmpFilePath)
         else:
             self.statusLabel_2.setText(u'请输入合法的IP地址')
-            # QtGui.QMessageBox.question(
-            #     self, 'Message', u'请输入合法的IP地址', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
 
     def openFile(self):
         fd = QtGui.QFileDialog(self).getOpenFileName()
@@ -615,14 +602,6 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         itemSize = item.childCount()
         for i in range(0, itemSize):
             item.child(i).setCheckState(0, state)
-
-    def isValidIP(self, ipStr):
-        if(len(ipStr) < 8):
-            return False
-        reip = re.compile(
-            '^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$')
-        return reip.match(ipStr)
-
 
 
 if __name__ == "__main__":

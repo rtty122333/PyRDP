@@ -11,6 +11,10 @@ import json
 import math
 import cmpWidget
 import setting
+import distributeVm
+import userTreeWidgetItem
+import vmTreeWidgetItem
+from control import public
 
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
@@ -55,10 +59,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.loginRefreshPBtn.clicked.connect(self.refreshLogin)
         self.settingPBtn.clicked.connect(self.settingFunc)
 
-        self.showFullScreen()
+        # self.showFullScreen()
 
     def initWin(self):
-
         self.winWidth=win32api.GetSystemMetrics(0)
         self.winHight = win32api.GetSystemMetrics(1)
         self.loginWidget.move(self.winWidth/2-self.loginWidget.width()/2,self.winHight/2-self.loginWidget.height()/2)
@@ -77,7 +80,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
 
     def settingFunc(self):
-        self.settingDialog=setting.SettingWidget(self)#setWidget.SetWidget(self.clientCtl)#setting.SettingDialog()#
+        self.settingDialog=setting.SettingWidget(self)
         self.settingDialog.show()
 
     def queryRoleCb(self,err,msg):
@@ -86,14 +89,12 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         else:
             self.statusLabel.clear()
             self.roleComboBox.clear()
-            for i in range(0,len(msg['roles'])):
-                self.roleComboBox.addItem(msg['roles'][i])
+            for i in range(0,len(msg['content'])):
+                self.roleComboBox.addItem(msg['content'][i])
 
     def login(self):
         if(len(self.userNameLineEdit.text())==0 or len(self.pwdLineEdit.text())==0):
             self.statusLabel.setText(u'请输入完整信息')
-            # QtGui.QMessageBox.question(
-            #     self, 'Message', u'请输入完整信息', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
         else:
             self.statusLabel.clear()
             self.clientCtl.login(str(self.userNameLineEdit.text()),str(self.pwdLineEdit.text()),str(self.roleComboBox.currentText()),self.loginCb)
@@ -103,7 +104,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.quitPushButton.show()
         self.indexWidget.hide()
         self.loginWidget.show()
-        
 
     def loginCb(self,err,msg):
         if self.isSthWrong(err,msg,self.statusLabel):
@@ -113,12 +113,10 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 self.loginWidget.hide()
                 self.quitPushButton.hide()
                 self.loginUserLabel.setText(self.userNameLineEdit.text())
-                self.refreshVms(msg['user']['vmMap'])
+                self.refreshVms(msg['content']['vmMap'])
                 self.indexWidget.show()
             else:
                 self.statusLabel.setText(u'错误的用户名或密码')
-                # QtGui.QMessageBox.question(
-                # self, 'Message', u'错误的用户名或密码.', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
 
     def refreshLogin(self):
         self.clientCtl.queryRole(self.queryRoleCb)
@@ -126,12 +124,11 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
     def refreshIndex(self):
         self.clientCtl.queryUser(str(self.userNameLineEdit.text()),self.queryUserCb)
 
-
     def queryUserCb(self,err,msg):
         if self.isSthWrong(err,msg,self.statusLabel1):
             pass
         else:
-            self.refreshVms(msg['user']['vmMap'])
+            self.refreshVms(msg['content']['vmMap'])
 
     def refreshVms(self,vms):
         self.statusLabel1.clear()
@@ -139,36 +136,33 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         #管理员
         if (self.roleComboBox.currentIndex()==1):
             self.usersVmsMap={}
+            self.currentItem=None
             if self.vmsTreeWidget.topLevelItemCount()>0:
                 self.vmsTreeWidget.clear()
             else:
                 self.vmsTreeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
                 self.vmsTreeWidget.customContextMenuRequested.connect(self.showVmsTreeContextMenu)
                 self.vmsTreeWidget.contextMenu = QtGui.QMenu(self.vmsTreeWidget)
-                self.vmsTreeWidget.connAction = self.vmsTreeWidget.contextMenu.addAction(u'刷新')
-                self.vmsTreeWidget.connAction.triggered.connect(self.refreshIndex)
+                self.vmsTreeWidget.refreshIndexAction = QtGui.QAction(u'刷新All',self.vmsTreeWidget.contextMenu)
+                self.vmsTreeWidget.refreshIndexAction.triggered.connect(self.refreshIndex)
+                self.vmsTreeWidget.refreshAction = QtGui.QAction(u'刷新',self.vmsTreeWidget.contextMenu)
+                self.vmsTreeWidget.refreshAction.triggered.connect(self.refreshItem)
+                self.vmsTreeWidget.removeAction = QtGui.QAction(u'移除',self.vmsTreeWidget.contextMenu)
+                self.vmsTreeWidget.removeAction.triggered.connect(self.removeItem)
+                self.vmsTreeWidget.distributeAction = QtGui.QAction(u'分配',self.vmsTreeWidget.contextMenu)
+                self.vmsTreeWidget.distributeAction.triggered.connect(self.distributeItem)
+                self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.refreshIndexAction)
                 self.addUserPBtn.clicked.connect(self.addUser)
                 self.addVmPBtn.clicked.connect(self.addVm)
                 self.addUserLabel.setStyleSheet("color:#ff0000")
                 self.addVmLabel.setStyleSheet("color:#ff0000")
-
-
+                self.adminVmsStatusLabel.setStyleSheet("color:#ff0000")
+                self.vmsTreeWidget.itemSelectionChanged.connect(self.itemChangedFunc)
+                
+            self.vmsTreeWidget.setHeaderLabel(u'详情')
             for userId in vms.keys():
                 item=vms[userId]
-                txt=item['userName']
-                userItem = QtGui.QTreeWidgetItem(self.vmsTreeWidget)
-                userItem.setText(0, txt)
-                userItem.setIcon(0,QtGui.QIcon("img/user.png"))
-                for index in range(0,len(item['vmMap'])):
-                    vm=item['vmMap'][index]
-                    vmTxt=vm['vmId']+' '+vm['userName']+' '+vm['vmName']+' '+vm['ip']
-                    vmItem = QtGui.QTreeWidgetItem(userItem)
-                    vmItem.setText(0, vmTxt)
-                    if vm['state']==2:
-                        vmItem.setIcon(0,QtGui.QIcon("img/cmpOnline.png"));
-                    else:
-                        vmItem.setIcon(0,QtGui.QIcon("img/cmpOffline.png"));
-                    userItem.addChild(vmItem)
+                userItem=userTreeWidgetItem.UserTreeWidgetItem(self.vmsTreeWidget,item,self)
                 self.usersVmsMap[userId]=userItem
             self.vmsWidget.hide()
             self.adminVmsWidget.show()
@@ -179,8 +173,8 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 self.vmsWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
                 self.vmsWidget.customContextMenuRequested.connect(self.showVmsContextMenu)
                 self.vmsWidget.contextMenu = QtGui.QMenu(self.vmsWidget)
-                self.vmsWidget.connAction = self.vmsWidget.contextMenu.addAction(u'刷新')
-                self.vmsWidget.connAction.triggered.connect(self.refreshIndex)
+                self.vmsWidget.refreshAction = self.vmsWidget.contextMenu.addAction(u'刷新')
+                self.vmsWidget.refreshAction.triggered.connect(self.refreshIndex)
             
             hBox = QtGui.QHBoxLayout()
 
@@ -227,27 +221,20 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
     def addUser(self):
         if(len(self.userNameLineEdit_user.text())==0 or len(self.pwdLineEdit_user.text())==0):
             self.addUserLabel.setText(u'请输入完整信息')
-            # QtGui.QMessageBox.question(
-            #     self, 'Message', u'请输入完整信息', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
         else:
             self.addUserLabel.clear()
             self.clientCtl.addUser(str(self.userNameLineEdit_user.text()),str(self.pwdLineEdit_user.text()),str(self.roleComboBox_user.currentText()),self.addUserCb)
 
-
     def addVm(self):
         if(len(self.vmIdLineEdit.text())==0 or len(self.vmUserNameLineEdit.text())==0 or len(self.vmNameLineEdit.text())==0 or len(self.ipLineEdit.text())==0 ):
             self.addVmLabel.setText(u'请输入完整信息')
-            # QtGui.QMessageBox.question(
-            #     self, 'Message', u'请输入完整信息', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
         else:
-            if(self.isValidIP(self.ipLineEdit.text())):
+            if(public.isValidIP(self.ipLineEdit.text())):
                 self.addVmLabel.clear()
                 self.clientCtl.addVm(str(self.vmIdLineEdit.text()),str(self.vmUserNameLineEdit.text()),str(self.vmNameLineEdit.text()),str(self.ipLineEdit.text()),self.addVmCb)
             else:
                 self.addVmLabel.setText(u'请输入合法IP信息')
             
-
-    
     def addUserCb(self,err,msg):
         if self.isSthWrong(err,msg,self.addUserLabel):
             pass
@@ -262,28 +249,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if self.isSthWrong(err,msg,self.addVmLabel):
             pass
         else:
-            vmTxt=msg['content']['vmId']+' '+msg['content']['userName']+' '+msg['content']['vmName']+' '+msg['content']['ip']
-            userItem = self.usersVmsMap['0']
-            vmItem = QtGui.QTreeWidgetItem(userItem)
-            vmItem.setText(0, vmTxt)
-            vmItem.setIcon(0,QtGui.QIcon("img/cmpOffline.png"));
-            userItem.addChild(vmItem)
-
-    def isSthWrong(self,err,msg,itemLable):
-        if err is None:
-            if msg['info']=='ok':
-                itemLable.clear()
-                return False
-            else:
-                itemLable.setText(msg['desc'])
-                # QtGui.QMessageBox.question(
-                # self, 'Message', msg['desc'], QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
-                return True
-        else:
-            itemLable.setText(err+u'连接失败,请稍后重试.')
-            # QtGui.QMessageBox.question(
-            #     self, 'Message', u'连接失败,请稍后重试'+err, QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
-            return True
+            self.usersVmsMap['0'].addVm(msg['content'])
 
     def closeFunc(self):
         shutdown=QtGui.QMessageBox()
@@ -295,12 +261,93 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if shutdown.clickedButton()==yesBtn:
             self.close()
 
-    def isValidIP(self,ipStr):
-        if(len(ipStr) < 8):
-            return False
-        reip = re.compile(
-            '^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$')
-        return reip.match(ipStr)
+    def itemChangedFunc(self):
+        if len(self.vmsTreeWidget.selectedItems())==1:
+            item=self.vmsTreeWidget.selectedItems()[0]
+            if self.currentItem==None or self.currentItem.flag!=item.flag or (item.flag=='vm' and (item.parent().userId+self.currentItem.parent().userId)!=0 and (item.parent().userId*self.currentItem.parent().userId)==0 ):
+                self.vmsTreeWidget.contextMenu=QtGui.QMenu(self.vmsTreeWidget)
+                self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.refreshIndexAction)
+                if item.flag=='vm':
+                    self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.refreshAction)
+                    if item.parent().userId==0:
+                        self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.distributeAction)
+                    else:
+                        self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.removeAction)
+                elif item.flag=='user':
+                    self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.refreshAction)
+            self.currentItem=item
+
+    def refreshItem(self,item):
+        self.currentItem.refreshItem(self.refreshItemsCb)
+        # if self.currentItem.flag=='vm':
+        #     self.clientCtl.queryVm(self.currentItem.vmId,self.refreshItemsCb)
+        # elif self.currentItem.flag=='user':
+        #     self.clientCtl.queryUserInfo(self.currentItem.userId,self.refreshItemsCb)
+
+    def refreshItemsCb(self,err,msg):
+        if self.isSthWrong(err,msg,self.adminVmsStatusLabel):
+            pass
+        else:
+            self.currentItem.refreshSelf(msg['content'])
+
+    def removeItem(self,item):
+        self.currentItem.removeItem(self.removeItemCb)
+        # removeMsg=QtGui.QMessageBox()
+        # removeMsg.setWindowTitle(u'警告')
+        # yesBtn=removeMsg.addButton(u"确定",QtGui.QMessageBox.AcceptRole)
+        # noBtn=removeMsg.addButton(u"取消",QtGui.QMessageBox.RejectRole)
+        # if self.currentItem.parent().userId==-1:
+        #     removeMsg.setText(u'确定将虚拟机 '+self.currentItem.txt+u' 移入待分配设备吗？')
+        #     removeMsg.exec_()
+        #     if removeMsg.clickedButton()==yesBtn:
+        #         self.clientCtl.removeUserVm(self.currentItem.vmId,self.currentItem.state,self.currentItem.parent().userId,self.removeItemCb)
+        # else:
+        #     removeMsg.setText(u'确定删除 '+self.currentItem.parent().userName+u' 的虚拟机 '+self.currentItem.txt+u' 吗？')
+        #     removeMsg.exec_()
+        #     if removeMsg.clickedButton()==yesBtn:
+        #         self.clientCtl.removeUserVm(self.currentItem.vmId,self.currentItem.state,self.currentItem.parent().userId,self.removeItemCb)
+
+    def removeItemCb(self,err,msg):
+        if self.isSthWrong(err,msg,self.adminVmsStatusLabel):
+            pass
+        else:
+            if self.currentItem.info['state']==4:
+                self.updateVmItem(self.currentItem,self.usersVmsMap['0'],msg)
+            else:
+                self.updateVmItem(self.currentItem,self.usersVmsMap['-1'],msg)
+                
+    def updateVmItem(self,vmItem,toParent,msg):
+        vmItem.parent().removeChild(vmItem)
+        vmItem.setState(msg['content']['state'])
+        vmItem.setStateTime(msg['content']['stateTime'])
+        vmItem=vmTreeWidgetItem.VmTreeWidgetItem(toParent,vmItem,toParent.childCount(),None)
+        toParent.addChild(vmItem)
+
+    def distributeItem(self,item):
+        self.distributeVm=distributeVm.DistributeVmWidget(self.currentItem,self)
+        self.distributeVm.show()
+
+    def userOfVmItem(self,userName):
+        if self.usersVmsMap==None:
+            return None
+        else:
+            for key in self.usersVmsMap.keys():
+                userItem=self.usersVmsMap[key]
+                if userItem.userName==userName:
+                    return userItem
+            return None
+
+    def isSthWrong(self, err, msg, itemLable):
+        if err is None:
+            if msg['info'] == 'ok':
+                itemLable.clear()
+                return False
+            else:
+                itemLable.setText(msg['desc'])
+                return True
+        else:
+            itemLable.setText(err + u'连接失败,请稍后重试.')
+            return True
 
     def closeEvent(self, event):
         sys.exit()

@@ -7,7 +7,6 @@ import rdpConn
 class cmpWidget(QtGui.QWidget):
 
     def __init__(self,parentPos, width, height,imgPath,userName,vmName,ip,vmId):
-
         super(cmpWidget, self).__init__()
         self.parentPos=parentPos
         self.ip=ip
@@ -21,9 +20,7 @@ class cmpWidget(QtGui.QWidget):
         pixMap=QtGui.QPixmap(imgPath)
         pixMap=pixMap.scaled(width,width,QtCore.Qt.KeepAspectRatioByExpanding)
         picBtn.setPixmap(pixMap)
-        #labelBtn.mouseReleaseEvent=self.mstscFunc
-        #picBtn.resize(width,width)
-        #widgetTmp.setStyleSheet("background-color:#2C3E50")
+
         hVBox.addWidget(picBtn)
 
         label=QtGui.QLabel()
@@ -41,7 +38,6 @@ class cmpWidget(QtGui.QWidget):
         self.rdpConn=rdpConn.RDPDialog(self.ip,self.userName)
 
     def mouseDoubleClickEvent(self,event):
-        
         reply=QtGui.QMessageBox()
         reply.setWindowTitle(u'提示')
         reply.setText(u'您正在连接机器\n'+self.text)
@@ -52,14 +48,10 @@ class cmpWidget(QtGui.QWidget):
             stdouterr = os.popen4(str('mstsc /v:' + self.ip))[1].read()
         else:
             event.ignore()
-        # reply = QtGui.QMessageBox.question(self,u'消息',u'您正在连接机器\n'+self.text,QtGui.QMessageBox.Yes|QtGui.QMessageBox.No,QtGui.QMessageBox.No)
-        # if reply==QtGui.QMessageBox.Yes:
-        #     stdouterr = os.popen4(str('mstsc /v:' + self.ip))[1].read()
-        # else:
-        #     event.ignore()
 
     def showContextMenu(self,pos):
         self.contextMenu.move(self.pos() + pos+self.parentPos)
         self.contextMenu.show()
+
     def connHandler(self):
         self.rdpConn.show()

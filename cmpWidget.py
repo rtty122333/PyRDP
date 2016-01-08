@@ -35,7 +35,6 @@ class cmpWidget(QtGui.QWidget):
         self.contextMenu = QtGui.QMenu(self)
         self.connAction = self.contextMenu.addAction(u'连接')
         self.connAction.triggered.connect(self.connHandler)
-        self.rdpConn=rdpConn.RDPDialog(self.ip,self.userName)
 
     def mouseDoubleClickEvent(self,event):
         reply=QtGui.QMessageBox()
@@ -54,4 +53,5 @@ class cmpWidget(QtGui.QWidget):
         self.contextMenu.show()
 
     def connHandler(self):
+        self.rdpConn=rdpConn.RDPDialog(self.ip,self.userName)
         self.rdpConn.show()

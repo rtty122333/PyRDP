@@ -313,7 +313,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             pass
         else:
             if self.currentItem.info['state']==4:
-                self.updateVmItem(self.currentItem,self.usersVmsMap['0'],msg)
+                self.currentItem.parent().removeChild(self.currentItem)
             else:
                 self.updateVmItem(self.currentItem,self.usersVmsMap['-1'],msg)
                 

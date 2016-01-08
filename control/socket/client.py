@@ -21,7 +21,7 @@ def client(msg,host,port,finalCb,cb):
         #print 'fail to connect to ther server '+host+':'+str(port)
         sock.close()
         if len(rst)==0:
-            return cb('fail to connect to ther server '+host+':'+str(port),None,finalCb)
+            return cb('fail to connect to server '+host+':'+str(port),None,finalCb)
     #time.sleep(10)
     # finally:
     #     sock.close()

@@ -49,7 +49,7 @@ class VmTreeWidgetItem(QtGui.QTreeWidgetItem):
         yesBtn=removeMsg.addButton(u"确定",QtGui.QMessageBox.AcceptRole)
         noBtn=removeMsg.addButton(u"取消",QtGui.QMessageBox.RejectRole)
         if self.info['state']==4:
-            removeMsg.setText(u'确定将虚拟机 '+self.txt+u' 移入待分配设备吗？')
+            removeMsg.setText(u'确定将虚拟机 '+self.txt+u' 彻底删除吗？')
             removeMsg.exec_()
             if removeMsg.clickedButton()==yesBtn:
                 self.rdpIndex.clientCtl.removeUserVm(self.info['vmId'],4,self.parent().userId,cb)

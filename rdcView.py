@@ -17,8 +17,15 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
     def __init__(self):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
-        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
+        #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
         self.setupUi(self)
+        self.driveNameMap = {'0': '未知',
+                             '1':'无根目录',
+                             '2':'可移动磁盘',
+                             '3':'本地磁盘',
+                             '4':'网络驱动器',
+                             '5':'CD 驱动器',
+                             '6':'虚拟内存盘'}
         #ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
         # self.connBtn.clicked.connect(self.connectFunc)
         self.optionWidget.hide()
@@ -71,27 +78,29 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.drives.setFlags(self.drives.flags() |
                              QtCore.Qt.ItemIsUserCheckable)
         self.drives.setCheckState(0, QtCore.Qt.Unchecked)
-        p1 = re.compile('\s')
-        data = os.popen('wmic logicaldisk  get VolumeName,Name').read()
-        dataItem = data.split('\n')
-        for i in range(1, len(dataItem)):
-            dataItem[i] = p1.sub('', dataItem[i])
-            item = dataItem[i].split(':')
-            length = len(item)
-            if(length > 1):
-                itemStr = item[1] + ' (' + item[0] + ':)'
-                itemDive = QtGui.QTreeWidgetItem(self.drives)
-                itemDive.setText(0, itemStr.decode('GBK'))
-                itemDive.setFlags(itemDive.flags() |
-                                  QtCore.Qt.ItemIsUserCheckable)
-                #itemDive.setCheckState(0, QtCore.Qt.Unchecked)
-                self.drives.addChild(itemDive)
+        data = os.popen('wmic logicaldisk get caption,drivetype,volumename').read()
+        items = data.splitlines()
+        for item in items[1:]:
+            properties = item.split()
+            if len(properties) < 1:
+                continue
+            elif len(properties) < 3:
+                volName = self.driveNameMap[properties[1]].decode('UTF-8')
+            else:
+                volName = properties[2].decode('GBK')
+            itemStr = volName + ' (' + properties[0] + ')'
+            itemDive = QtGui.QTreeWidgetItem(self.drives)
+            itemDive.setText(0, itemStr)
+            itemDive.setFlags(itemDive.flags() |
+                              QtCore.Qt.ItemIsUserCheckable)
+            itemDive.setCheckState(0, QtCore.Qt.Unchecked)
+            self.drives.addChild(itemDive)
 
         dynamicDrive = QtGui.QTreeWidgetItem(self.drives)
         dynamicDrive.setText(0, u'稍后插入的驱动器')
         dynamicDrive.setFlags(dynamicDrive.flags() |
                               QtCore.Qt.ItemIsUserCheckable)
-        #dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
+        dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
         self.drives.addChild(dynamicDrive)
 
         self.devices = QtGui.QTreeWidgetItem(self.equipTreeWidget)
@@ -104,7 +113,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         dynamicDevice.setText(0, u'稍后插入的设备')
         dynamicDevice.setFlags(dynamicDevice.flags() |
                                QtCore.Qt.ItemIsUserCheckable)
-        #dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
+        dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
         self.equipTreeWidget.itemClicked.connect(self.equipClicked)
         # self.devices.itemChanged.connect(self.equipClicked)
 

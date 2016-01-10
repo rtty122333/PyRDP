@@ -30,7 +30,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
     def __init__(self):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
-        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
+        #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
         self.setupUi(self)
         #ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("indexRdp")
         self.configPath='config/config.ini'

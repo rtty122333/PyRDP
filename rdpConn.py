@@ -4,8 +4,8 @@ import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
 from control import rdcCtl
-import win32api
-import ctypes
+#import win32api
+#import ctypes
 from control import public
 
 qtCreatorFile = "ui/rdcD.ui"
@@ -18,8 +18,9 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
     def __init__(self,ip,userName):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
+        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
         self.setupUi(self)
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
+        #ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
         self.ip=ip
         self.cmpLineEdit.setText(self.ip)
         self.accountTxtLable.setText(userName)
@@ -576,8 +577,9 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         height.append(1050)
         height.append(1080)
 
-        wi = win32api.GetSystemMetrics(0)
-        hi = win32api.GetSystemMetrics(1)
+        geometry = QtGui.QApplication.desktop().screenGeometry()
+        wi = geometry.width()
+        hi = geometry.height()
         wIndex = self.getMinIndexUp(wi, width)
         hIndex = self.getMinIndexUp(hi, height)
         self.metricsMap = []

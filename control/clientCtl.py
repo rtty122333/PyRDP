@@ -25,6 +25,10 @@ class clientCtl():
         msg=clientPackHandler.authUser(userName,password,role,self.IP)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
+    def logout(self,userId,cb):
+        msg=clientPackHandler.logout(userId,self.IP)
+        client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
+
     def queryUser(self,userName,cb):
         msg=clientPackHandler.queryUser(userName)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
@@ -41,20 +45,20 @@ class clientCtl():
         msg=clientPackHandler.queryRole(self.IP)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def addUser(self,userName,password,role,cb):
-        msg=clientPackHandler.addUser(userName, password,role)
+    def addUser(self,adminId,userName,password,role,cb):
+        msg=clientPackHandler.addUser(adminId,self.IP,userName, password,role)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def addVm(self,vmId,userName,vmName,ip,cb):
-        msg=clientPackHandler.addVm(vmId,userName,vmName,ip)
+    def addVm(self,adminId,vmId,userName,vmName,ip,cb):
+        msg=clientPackHandler.addVm(adminId,self.IP,vmId,userName,vmName,ip)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def addUserVm(self,userId,vmId,cb):
-        msg=clientPackHandler.addUserVm(userId,vmId)
+    def addUserVm(self,adminId,userId,vmId,cb):
+        msg=clientPackHandler.addUserVm(adminId,self.IP,userId,vmId)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def removeUserVm(self,vmId,state,userId,cb):
-        msg=clientPackHandler.removeUserVm(vmId,state,userId)
+    def removeUserVm(self,adminId,vmId,state,userId,cb):
+        msg=clientPackHandler.removeUserVm(adminId,self.IP,vmId,state,userId)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
     def cbTmp(self,err,msg,cb):

@@ -101,16 +101,15 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.clientCtl.login(str(self.userNameLineEdit.text()),str(self.pwdLineEdit.text()),str(self.roleComboBox.currentText()),self.loginCb)
 
     def logout(self):
-        self.statusLabel.clear()
-        self.quitPushButton.show()
-        self.indexWidget.hide()
-        self.loginWidget.show()
+        self.clientCtl.logout(self.userId,self.logoutCb)
 
     def loginCb(self,err,msg):
         if self.isSthWrong(err,msg,self.statusLabel):
             pass
         else:
             if msg['auth']=='success':
+                self.userId=msg['content']['userId']
+                self.userName=msg['content']['userName']
                 self.loginWidget.hide()
                 self.quitPushButton.hide()
                 self.loginUserLabel.setText(self.userNameLineEdit.text())
@@ -118,6 +117,15 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 self.indexWidget.show()
             else:
                 self.statusLabel.setText(u'错误的用户名或密码')
+
+    def logoutCb(self,err,msg):
+        if self.isSthWrong(err,msg,self.statusLabel1):
+            pass
+        else:
+            self.statusLabel.clear()
+            self.quitPushButton.show()
+            self.indexWidget.hide()
+            self.loginWidget.show()
 
     def refreshLogin(self):
         self.clientCtl.queryRole(self.queryRoleCb)
@@ -224,7 +232,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.addUserLabel.setText(u'请输入完整信息')
         else:
             self.addUserLabel.clear()
-            self.clientCtl.addUser(str(self.userNameLineEdit_user.text()),str(self.pwdLineEdit_user.text()),str(self.roleComboBox_user.currentText()),self.addUserCb)
+            self.clientCtl.addUser(self.userId,str(self.userNameLineEdit_user.text()),str(self.pwdLineEdit_user.text()),str(self.roleComboBox_user.currentText()),self.addUserCb)
 
     def addVm(self):
         if(len(self.vmIdLineEdit.text())==0 or len(self.vmUserNameLineEdit.text())==0 or len(self.vmNameLineEdit.text())==0 or len(self.ipLineEdit.text())==0 ):
@@ -232,7 +240,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         else:
             if(public.isValidIP(self.ipLineEdit.text())):
                 self.addVmLabel.clear()
-                self.clientCtl.addVm(str(self.vmIdLineEdit.text()),str(self.vmUserNameLineEdit.text()),str(self.vmNameLineEdit.text()),str(self.ipLineEdit.text()),self.addVmCb)
+                self.clientCtl.addVm(self.userId,str(self.vmIdLineEdit.text()),str(self.vmUserNameLineEdit.text()),str(self.vmNameLineEdit.text()),str(self.ipLineEdit.text()),self.addVmCb)
             else:
                 self.addVmLabel.setText(u'请输入合法IP信息')
             
@@ -240,11 +248,8 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if self.isSthWrong(err,msg,self.addUserLabel):
             pass
         else:
-            txt=msg['content']['userName']
-            userItem = QtGui.QTreeWidgetItem(self.vmsTreeWidget)
-            userItem.setText(0, txt)
-            userItem.setIcon(0,QtGui.QIcon("img/user.png"))
-            self.usersVmsMap[msg['content']['userId']]=userItem
+            userItem=userTreeWidgetItem.UserTreeWidgetItem(self.vmsTreeWidget,msg['content'],self)
+            self.usersVmsMap[str(msg['content']['userId'])]=userItem
 
     def addVmCb(self,err,msg):
         if self.isSthWrong(err,msg,self.addVmLabel):

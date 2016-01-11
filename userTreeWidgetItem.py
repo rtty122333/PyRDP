@@ -13,12 +13,12 @@ class UserTreeWidgetItem(QtGui.QTreeWidgetItem):
         self.flag='user'
         self.userId = userInfo["userId"]
         self.userName = userInfo["userName"]
-        self.state = userInfo["userState"]
-        self.stateTime = userInfo["stateTime"]
         self.setText(0, self.userName)
         self.refreshSelf(userInfo)
 
     def refreshSelf(self,userInfo):
+        self.state = userInfo["userState"]
+        self.stateTime = userInfo["stateTime"]
         while(self.child(0)):
             self.removeChild(self.child(0))
         if userInfo['userState']==1:

@@ -4,7 +4,7 @@ import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
 
-qtCreatorFile = "rdcD.ui"
+qtCreatorFile = "ui/rdcD.ui"
 
 Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 

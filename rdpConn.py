@@ -6,35 +6,36 @@ from PyQt4 import QtCore, QtGui, uic
 from control import rdcCtl
 #import win32api
 #import ctypes
+from control import public
 
 qtCreatorFile = "ui/rdcD.ui"
 
 Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 
-class MyDialog(QtGui.QDialog, Ui_QDialog):
+class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
-    def __init__(self):
+    def __init__(self,ip,userName):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
-        #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
+        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
         self.setupUi(self)
-        self.driveNameMap = {'0': '未知',
-                             '1':'无根目录',
-                             '2':'可移动磁盘',
-                             '3':'本地磁盘',
-                             '4':'网络驱动器',
-                             '5':'CD 驱动器',
-                             '6':'虚拟内存盘'}
         #ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
-        # self.connBtn.clicked.connect(self.connectFunc)
+        self.ip=ip
+        self.cmpLineEdit.setText(self.ip)
+        self.accountTxtLable.setText(userName)
+        self.cmpLineEdit.setEchoMode(QtGui.QLineEdit.Password)
+        self.cmpLineEdit_2.setEchoMode(QtGui.QLineEdit.Password);
+        self.cmpLineEdit.setReadOnly(True)
+        self.cmpLineEdit_2.setReadOnly(True)
+        self.statusLabel.setStyleSheet("color:#ff0000")
+        self.statusLabel_2.setStyleSheet("color:#ff0000")
         self.optionWidget.hide()
         self.optionToolBtn.clicked.connect(self.toOptionDWidget)
         self.optionToolBtn_2.clicked.connect(self.toDefaultDWidget)
         self.connBtn.clicked.connect(self.defaultConnectFunc)
         self.connBtn_2.clicked.connect(self.optionConnectFunc)
-        #self.setGeometry(300, 300, 410, 180)
-        #self.setFixedSize(self.width(), self.height())
+        # self.setFixedSize(self.width(), self.height())
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.openBtn.clicked.connect(self.openFile)
         self.saveBtn.clicked.connect(self.saveFile)
@@ -51,7 +52,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.initDeskSize()
 
         self.resize(391, 151)
-        #self.showFullScreen()
         self.defaultRdpPath = os.getcwd() + "\\config\\.tmpRdp.rdp"
         self.tmpFileFolder = os.getcwd() + '\\tmp'
         self.rdpFilePath = ''
@@ -62,10 +62,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
         self.initTmpFolder()
 
-        # print self.colorComboBox.itemText(0).extracomment
-        #self.setGeometry(300, 300, 250, 150)
-        # self.connect(self.accountEdit, SIGNAL("returnPressed(void)"),
-        #              self.runCommand
     def initTmpFolder(self):
         if(os.path.isdir(self.tmpFileFolder)):
             pass
@@ -78,29 +74,27 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.drives.setFlags(self.drives.flags() |
                              QtCore.Qt.ItemIsUserCheckable)
         self.drives.setCheckState(0, QtCore.Qt.Unchecked)
-        data = os.popen('wmic logicaldisk get caption,drivetype,volumename').read()
-        items = data.splitlines()
-        for item in items[1:]:
-            properties = item.split()
-            if len(properties) < 1:
-                continue
-            elif len(properties) < 3:
-                volName = self.driveNameMap[properties[1]].decode('UTF-8')
-            else:
-                volName = properties[2].decode('GBK')
-            itemStr = volName + ' (' + properties[0] + ')'
-            itemDive = QtGui.QTreeWidgetItem(self.drives)
-            itemDive.setText(0, itemStr)
-            itemDive.setFlags(itemDive.flags() |
-                              QtCore.Qt.ItemIsUserCheckable)
-            itemDive.setCheckState(0, QtCore.Qt.Unchecked)
-            self.drives.addChild(itemDive)
+        p1 = re.compile('\s')
+        data = os.popen('wmic logicaldisk  get VolumeName,Name').read()
+        dataItem = data.split('\n')
+        for i in range(1, len(dataItem)):
+            dataItem[i] = p1.sub('', dataItem[i])
+            item = dataItem[i].split(':')
+            length = len(item)
+            if(length > 1):
+                itemStr = item[1] + ' (' + item[0] + ':)'
+                itemDive = QtGui.QTreeWidgetItem(self.drives)
+                itemDive.setText(0, itemStr.decode('GBK'))
+                itemDive.setFlags(itemDive.flags() |
+                                  QtCore.Qt.ItemIsUserCheckable)
+                #itemDive.setCheckState(0, QtCore.Qt.Unchecked)
+                self.drives.addChild(itemDive)
 
         dynamicDrive = QtGui.QTreeWidgetItem(self.drives)
         dynamicDrive.setText(0, u'稍后插入的驱动器')
         dynamicDrive.setFlags(dynamicDrive.flags() |
                               QtCore.Qt.ItemIsUserCheckable)
-        dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
+        #dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
         self.drives.addChild(dynamicDrive)
 
         self.devices = QtGui.QTreeWidgetItem(self.equipTreeWidget)
@@ -113,20 +107,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         dynamicDevice.setText(0, u'稍后插入的设备')
         dynamicDevice.setFlags(dynamicDevice.flags() |
                                QtCore.Qt.ItemIsUserCheckable)
-        dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
+        #dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
         self.equipTreeWidget.itemClicked.connect(self.equipClicked)
         # self.devices.itemChanged.connect(self.equipClicked)
-
-        '''
-        model=QtGui.QStandardItemModel(self.equipTreeView)
-        item=QtGui.QStandardItem()
-        model->appendRow(itemProject);  
-        model->setItem(model->indexFromItem(itemProject).row(),1,new QStandardItem(QStringLiteral("项目信息说明")));  
-        QStandardItem* itemFolder = new QStandardItem(m_publicIconMap[QStringLiteral("treeItem_folder")],QStringLiteral("文件夹1"));  
-        itemProject->appendRow(itemFolder);  
-        itemProject->setChild(itemFolder->index().row(),1,new QStandardItem(QStringLiteral("信息说明")));  
-        itemFolder = new QStandardItem(m_publicIconMap[QStringLiteral("treeItem_folder")],QStringLiteral("文件夹2"));  
-        itemProject->appendRow(itemFolder);  '''
 
     def initDeskSize(self):
         self.initMetics()
@@ -202,6 +185,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         text=str(self.cmpLineEdit.text())
         if len(text):
             self.cmpLineEdit_2.setText(text)
+        self.accountTxtLable_2.setText(self.accountTxtLable.text())
         self.resize(411, 346)
         self.defaultWidget.hide()
         self.optionWidget.show()
@@ -218,24 +202,21 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
     def runCommand(self, cmdStr):
         stdouterr = os.popen4(str(cmdStr))[1].read()
-        # print '--'+stdouterr+'--'
-        # if(len(stdouterr)==0):
-        #     self.close()
 
     def defaultConnectFunc(self):
-        if(self.isValidIP(self.cmpLineEdit.text())):
+        if(public.isValidIP(self.cmpLineEdit.text())):
+            self.statusLabel.clear()
             self.runCommand('mstsc /v:' + self.cmpLineEdit.text())
         else:
-            QtGui.QMessageBox.question(
-                self, 'Message', u'请输入合法的IP地址', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
+            self.statusLabel.setText(u'请输入合法的IP地址')
 
     def optionConnectFunc(self):
-        if(self.isValidIP(self.cmpLineEdit_2.text())):
+        if(public.isValidIP(self.cmpLineEdit_2.text())):
             self.updataRdpFile()
+            self.statusLabel_2.clear()
             self.runCommand('mstsc ' + self.tmpFilePath)
         else:
-            QtGui.QMessageBox.question(
-                self, 'Message', u'请输入合法的IP地址', QtGui.QMessageBox.Yes, QtGui.QMessageBox.Yes)
+            self.statusLabel_2.setText(u'请输入合法的IP地址')
 
     def openFile(self):
         fd = QtGui.QFileDialog(self).getOpenFileName()
@@ -331,38 +312,6 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         content.append('desktopheight:i:' + str(self.metricsMap[index][1]))
 
         self.rdcCtl.appendDefautContent(content)
-
-        '''self.rdcCtl.appendDefautContent('displayconnectionbar:i:1' if self.connBarCheckBox.checkState() == QtCore.Qt.Checked else 'displayconnectionbar:i:0')
-
-        self.rdcCtl.appendDefautContent('redirectprinters:i:1' if self.printCheckBox.checkState() == QtCore.Qt.Checked else 'redirectprinters:i:0')
-        
-        self.rdcCtl.appendDefautContent('redirectclipboard:i:1' if self.cliCheckBox.checkState() == QtCore.Qt.Checked else 'redirectclipboard:i:0')
-        
-        self.rdcCtl.appendDefautContent('autoreconnection enabled:i:1' if self.reconnCheckBox.checkState() == QtCore.Qt.Checked else 'autoreconnection enabled:i:0')
-
-        self.rdcCtl.appendDefautContent('authentication level:i:' +str(self.authComboBox.currentIndex()))
-        
-        self.rdcCtl.appendDefautContent('full address:s:' +str(self.cmpLineEdit_2.text()))
-        
-        self.rdcCtl.appendDefautContent('audiocapturemode:i:' +str(self.audioCaptureComBox.currentIndex()))
-        
-        self.rdcCtl.appendDefautContent('audiomode:i:' +str(self.audioPlayComBox.currentIndex()))
-        
-        self.rdcCtl.appendDefautContent('keyboardhook:i:' +str(self.keyComBox.currentIndex()))
-
-        self.rdcCtl.appendDefautContent('redirectsmartcards:i:1' if self.smartCardCheckBox.checkState()
-             == QtCore.Qt.Checked else 'redirectsmartcards:i:0')
-
-        self.rdcCtl.appendDefautContent('redirectcomports:i:1' if self.portCheckBox.checkState()
-             == QtCore.Qt.Checked else 'redirectcomports:i:0')
-
-        self.rdcCtl.appendDefautContent('redirectcomports:i:1' if self.portCheckBox.checkState()
-             == QtCore.Qt.Checked else 'redirectcomports:i:0')
-
-        if(self.drives.checkState(0) == QtCore.Qt.Checked):
-            self.rdcCtl.appendDefautContent('drivestoredirect:s:*')
-        if(self.devices.checkState(0) == QtCore.Qt.Checked):
-            self.rdcCtl.appendDefautContent('devicestoredirect:s:*')'''
 
     def saveTmpFileFromRDP(self):
         self.rdcCtl.setContentFromOpenFile('displayconnectionbar:i:', '1' if self.connBarCheckBox.checkState(
@@ -656,28 +605,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         for i in range(0, itemSize):
             item.child(i).setCheckState(0, state)
 
-    '''def closeEvent(self, event):
-        reply = QtGui.QMessageBox.question(
-            self, 'Message', 'Are you sure to quit?', QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-
-        if reply == QtGui.QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()'''
-
-    def isValidIP(self, ipStr):
-        if(len(ipStr) < 8):
-            return False
-        reip = re.compile(
-            '^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$')
-        return reip.match(ipStr)
-
-    def closeEvent(self, event):
-        sys.exit()
-
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    dialog = MyDialog()
+    dialog = RDPDialog('192.168.160.18','hi')
     dialog.show()
     sys.exit(app.exec_())

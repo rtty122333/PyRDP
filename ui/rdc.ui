@@ -1,0 +1,976 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>397</width>
+    <height>326</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>配置远程桌面</string>
+  </property>
+  <property name="inputMethodHints">
+   <set>Qt::ImhNone</set>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>401</width>
+     <height>331</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="optionWidget" native="true">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>381</width>
+      <height>321</height>
+     </rect>
+    </property>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>381</width>
+       <height>281</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>5</number>
+     </property>
+     <property name="movable">
+      <bool>false</bool>
+     </property>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>常规</string>
+      </attribute>
+      <widget class="QGroupBox" name="generalGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>10</y>
+         <width>371</width>
+         <height>241</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>登录设置</string>
+       </property>
+       <widget class="QWidget" name="layoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>40</y>
+          <width>331</width>
+          <height>63</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="cmpLable_2">
+           <property name="font">
+            <font>
+             <family>Agency FB</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>计算机(C):</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="hostLineEdit"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLabel" name="statusLabel_2">
+        <property name="geometry">
+         <rect>
+          <x>233</x>
+          <y>100</y>
+          <width>121</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Times New Roman</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>显示</string>
+      </attribute>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>361</width>
+         <height>231</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QGroupBox" name="showGroupBox">
+          <property name="title">
+           <string>显示配置</string>
+          </property>
+          <widget class="QLabel" name="sizeLabel">
+           <property name="geometry">
+            <rect>
+             <x>40</x>
+             <y>20</y>
+             <width>301</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>选择远程桌面的大小。将滑块拖动到最右边开使用全屏。</string>
+           </property>
+          </widget>
+          <widget class="QWidget" name="layoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>40</y>
+             <width>211</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinAndMaxSize</enum>
+            </property>
+            <item>
+             <widget class="QLabel" name="sizeLabel_2">
+              <property name="text">
+               <string>小</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="horizontalSlider">
+              <property name="mouseTracking">
+               <bool>false</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::ClickFocus</enum>
+              </property>
+              <property name="contextMenuPolicy">
+               <enum>Qt::PreventContextMenu</enum>
+              </property>
+              <property name="inputMethodHints">
+               <set>Qt::ImhNone</set>
+              </property>
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>6</number>
+              </property>
+              <property name="singleStep">
+               <number>1</number>
+              </property>
+              <property name="pageStep">
+               <number>1</number>
+              </property>
+              <property name="value">
+               <number>0</number>
+              </property>
+              <property name="sliderPosition">
+               <number>0</number>
+              </property>
+              <property name="tracking">
+               <bool>false</bool>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="invertedAppearance">
+               <bool>false</bool>
+              </property>
+              <property name="invertedControls">
+               <bool>false</bool>
+              </property>
+              <property name="tickPosition">
+               <enum>QSlider::TicksBelow</enum>
+              </property>
+              <property name="tickInterval">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="sizeLabel_3">
+              <property name="text">
+               <string>大</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QLabel" name="deskSizeLabel">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>70</y>
+             <width>81</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="colorGroupBox">
+          <property name="title">
+           <string>颜色</string>
+          </property>
+          <widget class="QLabel" name="colorLabel">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>20</y>
+             <width>161</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>选择远程会话的颜色深度。</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="colorComboBox">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>50</y>
+             <width>121</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="currentIndex">
+            <number>3</number>
+           </property>
+           <item>
+            <property name="text">
+             <string extracomment="15">增强色(15 位)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string extracomment="16">增强色(16 位)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string extracomment="24">真彩色(24 位)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string extracomment="32">最高质量(32 位)</string>
+            </property>
+           </item>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="connBarCheckBox">
+          <property name="text">
+           <string>全屏显示时显示连接栏。</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_5">
+      <attribute name="title">
+       <string>本地资源</string>
+      </attribute>
+      <widget class="QGroupBox" name="vedioGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>1</y>
+         <width>359</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>语音设置</string>
+       </property>
+       <widget class="QLabel" name="audioPlayLabel">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>远程音频播放</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="audioCaptureLabel">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>20</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>远程音频录制</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="audioPlayComBox">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>40</y>
+          <width>141</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>在此计算机上播放</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>在远程计算机上播放</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>不要播放</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QComboBox" name="audioCaptureComBox">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>40</y>
+          <width>131</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>不录制</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>从此计算机进行记录</string>
+         </property>
+        </item>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="keyGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>74</y>
+         <width>359</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>键盘</string>
+       </property>
+       <widget class="QLabel" name="keyLabel">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>111</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>应用windows组合键</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="keyComBox">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>40</y>
+          <width>141</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>在这台计算机上</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>在远程计算机上</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>仅在全屏显示时</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QLabel" name="keyTestLabel">
+        <property name="geometry">
+         <rect>
+          <x>210</x>
+          <y>20</y>
+          <width>111</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>示例：Alt+Tab</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="resGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>149</y>
+         <width>359</width>
+         <height>101</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>本地设备和资源</string>
+       </property>
+       <widget class="QLabel" name="resLabel">
+        <property name="geometry">
+         <rect>
+          <x>70</x>
+          <y>30</y>
+          <width>311</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>选择您要在远程会话中使用的设备和资源。</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="printCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>70</x>
+          <y>60</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>打印机</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="cliCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>60</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>剪切板</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_6">
+      <attribute name="title">
+       <string>本地设备</string>
+      </attribute>
+      <widget class="QGroupBox" name="equipGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>351</width>
+         <height>231</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>本地设备</string>
+       </property>
+       <widget class="QLabel" name="equipLabel">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>301</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>选择要在远程会话中使用的这台计算机上的设备和资源。</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="smartCardCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>50</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>智能卡</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="portCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>50</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>端口</string>
+        </property>
+       </widget>
+       <widget class="QTreeWidget" name="equipTreeWidget">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>80</y>
+          <width>311</width>
+          <height>141</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <attribute name="headerVisible">
+         <bool>false</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string notr="true">1</string>
+         </property>
+        </column>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_7">
+      <attribute name="title">
+       <string>体验</string>
+      </attribute>
+      <widget class="QGroupBox" name="perGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>351</width>
+         <height>211</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>性能</string>
+       </property>
+       <widget class="QLabel" name="connTypeLabel">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>20</y>
+          <width>221</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>选择连接速度来优化性能。</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="connTypeComboBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>40</y>
+          <width>221</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>调制解调器(56Kbps)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>低速宽带(256 Kbps - 2Mbps)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>卫星(2 Mbps - 16 Mbps，高延迟)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>高速宽带( 2 Mbps - 10 Mbps)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>WAN (10 Mbps 或更高速，高延迟)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>局域网(10 Mbps 或更高)</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QCheckBox" name="backCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>90</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>桌面背景</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="connTypeLabel_2">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>70</y>
+          <width>221</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>允许以下功能：</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="fontCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>110</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>字体平滑</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="backCssCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>130</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>桌面布局</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="dragCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>150</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>拖动时显示窗口内容</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="menuCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>170</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>菜单和窗口动画</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="bitMapCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>110</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>持久位图缓存</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="viewCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>90</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>视图样式</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QCheckBox" name="reconnCheckBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>230</y>
+         <width>271</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>如果连接中断，则重新连接。</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_8">
+      <attribute name="title">
+       <string>高级</string>
+      </attribute>
+      <widget class="QGroupBox" name="authGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>351</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>服务器身份验证</string>
+       </property>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>20</y>
+          <width>301</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="lineWidth">
+         <number>4</number>
+        </property>
+        <property name="midLineWidth">
+         <number>4</number>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;服务器身份验证会验证是都正在连接到预期远程计算机。&lt;/p&gt;&lt;p&gt;连接所需的验证强度由系统安全策略确定。&lt;/p&gt;&lt;p&gt;如果服务器身份验证失败：&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="authComboBox">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>100</y>
+          <width>291</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>连接并且不显示警告</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>不连接</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>显示警告</string>
+         </property>
+        </item>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="optionBtnWidget" native="true">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>280</y>
+       <width>371</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <widget class="QWidget" name="layoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>1</x>
+        <y>7</y>
+        <width>369</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="saveBtn">
+           <property name="text">
+            <string>保存</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="cancelBtn">
+           <property name="text">
+            <string>取消</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>hostLineEdit</tabstop>
+  <tabstop>saveBtn</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>colorComboBox</tabstop>
+  <tabstop>connBarCheckBox</tabstop>
+  <tabstop>audioPlayComBox</tabstop>
+  <tabstop>audioCaptureComBox</tabstop>
+  <tabstop>keyComBox</tabstop>
+  <tabstop>printCheckBox</tabstop>
+  <tabstop>cliCheckBox</tabstop>
+  <tabstop>smartCardCheckBox</tabstop>
+  <tabstop>portCheckBox</tabstop>
+  <tabstop>equipTreeWidget</tabstop>
+  <tabstop>connTypeComboBox</tabstop>
+  <tabstop>backCheckBox</tabstop>
+  <tabstop>fontCheckBox</tabstop>
+  <tabstop>backCssCheckBox</tabstop>
+  <tabstop>dragCheckBox</tabstop>
+  <tabstop>menuCheckBox</tabstop>
+  <tabstop>bitMapCheckBox</tabstop>
+  <tabstop>viewCheckBox</tabstop>
+  <tabstop>reconnCheckBox</tabstop>
+  <tabstop>authComboBox</tabstop>
+  <tabstop>cancelBtn</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

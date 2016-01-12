@@ -43,7 +43,7 @@ class cmpWidget(QtGui.QWidget):
         noBtn=reply.addButton(u"否",QtGui.QMessageBox.RejectRole)
         reply.exec_()
         if reply.clickedButton()==yesBtn:
-            public.userConnVm(self.rdpIndex.clientCtl,str('mstsc /v:' + self.ip),self.rdpIndex.userName,self.info)
+            public.userConnVm(self.rdpIndex.clientCtl,str('mstsc /v:' + self.info['ip']),self.rdpIndex.userName,self.info)
         else:
             event.ignore()
 

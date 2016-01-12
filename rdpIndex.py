@@ -3,7 +3,6 @@ import re
 import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
-from control import rdcCtl
 import win32api
 import ctypes
 from control import clientCtl
@@ -59,6 +58,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.logoutPushButton.clicked.connect(self.logout)
         self.loginRefreshPBtn.clicked.connect(self.refreshLogin)
         self.settingPBtn.clicked.connect(self.settingFunc)
+        clientCtl.cleanCmdkeyEnv()
 
         self.showFullScreen()
 
@@ -217,6 +217,8 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.vmsWidget.setLayout(hBox)
             self.adminVmsWidget.hide()
             self.vmsWidget.show()
+            clientCtl.cleanCmdkeyEnv()
+            clientCtl.initCmdkeyEnv(vms)
 
     def showVmsContextMenu(self,pos):
         self.vmsWidget.contextMenu.move(self.vmsWidget.pos()+ pos+self.detailWidget.pos()+self.indexWidget.pos())

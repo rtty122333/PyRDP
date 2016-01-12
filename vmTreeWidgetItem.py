@@ -52,12 +52,12 @@ class VmTreeWidgetItem(QtGui.QTreeWidgetItem):
             removeMsg.setText(u'确定将虚拟机 '+self.txt+u' 彻底删除吗？')
             removeMsg.exec_()
             if removeMsg.clickedButton()==yesBtn:
-                self.rdpIndex.clientCtl.removeUserVm(self.rdpIndex.userId,self.info['vmId'],4,self.parent().userId,cb)
+                self.rdpIndex.clientCtl.removeUserVm(self.rdpIndex.userName,self.info,self.parent().userName,cb)
         else:
             removeMsg.setText(u'确定删除 '+self.parent().userName+u' 的虚拟机 '+self.txt+u' 吗？')
             removeMsg.exec_()
             if removeMsg.clickedButton()==yesBtn:
-                self.rdpIndex.clientCtl.removeUserVm(self.rdpIndex.userId,self.info['vmId'],self.info['state'],self.parent().userId,cb)
+                self.rdpIndex.clientCtl.removeUserVm(self.rdpIndex.userName,self.info,self.parent().userName,cb)
 
     def setState(self,stateTmp):
         self.info['state']=stateTmp

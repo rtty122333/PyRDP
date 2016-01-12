@@ -1,18 +1,17 @@
 # -*- coding:utf8 -*-
-import os
 from PyQt4 import QtGui, QtCore
 import rdpConn
+from control import public
 
 
 class cmpWidget(QtGui.QWidget):
 
-    def __init__(self,parentPos, width, height,imgPath,userName,vmName,ip,vmId):
+    def __init__(self,rdpIndex,parentPos, width, height,imgPath,vmInfo):
         super(cmpWidget, self).__init__()
+        self.rdpIndex=rdpIndex
         self.parentPos=parentPos
-        self.ip=ip
-        self.vmId=vmId
-        self.userName=userName
-        self.text=u'用户名：'+userName+'\r\n'+u'虚拟机：'+vmName
+        self.info=vmInfo
+        self.text=u'用户名：'+self.info['userName']+'\r\n'+u'虚拟机：'+self.info['vmName']
         hVBox=QtGui.QVBoxLayout()
         self.setMinimumSize(width,height)
         
@@ -44,7 +43,7 @@ class cmpWidget(QtGui.QWidget):
         noBtn=reply.addButton(u"否",QtGui.QMessageBox.RejectRole)
         reply.exec_()
         if reply.clickedButton()==yesBtn:
-            stdouterr = os.popen4(str('mstsc /v:' + self.ip))[1].read()
+            public.userConnVm(self.rdpIndex.clientCtl,str('mstsc /v:' + self.ip),self.rdpIndex.userName,self.info)
         else:
             event.ignore()
 
@@ -53,5 +52,5 @@ class cmpWidget(QtGui.QWidget):
         self.contextMenu.show()
 
     def connHandler(self):
-        self.rdpConn=rdpConn.RDPDialog(self.ip,self.userName)
+        self.rdpConn=rdpConn.RDPDialog(self.rdpIndex,self.info)
         self.rdpConn.show()

@@ -8,11 +8,11 @@ def authUser(userName, password,roleName, ip):
     content['ip']=ip;
     msg['content']=content;
     return msg;
-def logout(userId,ip):
+def logout(userName,ip):
     msg = {};
     msg['type'] = 'logout';
     content = {};
-    content['userId']=userId;
+    content['userName']=userName;
     content['ip']=ip;
     msg['content']=content;
     return msg;
@@ -23,11 +23,11 @@ def queryUser(userName):
     content['userName']=userName;
     msg['content']=content;
     return msg;
-def queryUserInfo(userId):
+def queryUserInfo(userName):
     msg = {};
     msg['type'] = 'queryUserInfo';
     content = {};
-    content['userId']=userId;
+    content['userName']=userName;
     msg['content']=content;
     return msg;
 def queryVm(vmId):
@@ -57,7 +57,7 @@ def addUser(adminId,adminIp,userName, password,roleName):
     msg['content']=content;
     return msg;
 
-def addVm(adminId,adminIp,vmId,userName,vmName,ip):
+def addVm(adminId,adminIp,vmId,userName,vmName,ip,pwd):
     msg = {};
     msg['type'] = 'addVm';
     content = {};
@@ -67,28 +67,53 @@ def addVm(adminId,adminIp,vmId,userName,vmName,ip):
     content['userName']=userName;
     content['vmName']=vmName;
     content['ip']=ip;
+    content['password']=pwd;
     msg['content']=content;
     return msg;
 
-def addUserVm(adminId,adminIp,userId,vmId):
+def addUserVm(adminId,adminIp,userName,vmInfo):
     msg = {};
     msg['type'] = 'addUserVm';
     content = {};
     content['adminId']=adminId;
     content['adminIp']=adminIp;
-    content['userId']=userId;
-    content['vmId']=vmId;
+    content['userName']=userName;
+    content['vmId']=vmInfo['vmId'];
+    content['vmName']=vmInfo['vmName'];
     msg['content']=content;
     return msg;
     
-def removeUserVm(adminId,adminIp,vmId,state,userId):
+def removeUserVm(adminId,adminIp,vmInfo,userName):
     msg = {};
     msg['type'] = 'removeUserVm';
     content = {};
     content['adminId']=adminId;
     content['adminIp']=adminIp;
-    content['vmId']=vmId;
-    content['state']=state;
-    content['userId']=userId;
+    content['vmId']=vmInfo['vmId'];
+    content['vmName']=vmInfo['vmName'];
+    content['state']=vmInfo['state'];
+    content['userName']=userName;
+    msg['content']=content;
+    return msg;
+
+def userConnVm(ip,userName,vmInfo):
+    msg = {};
+    msg['type'] = 'userConnVm';
+    content = {};
+    content['ip']=ip;
+    content['userName']=userName;
+    content['vmId']=vmInfo['vmId'];
+    content['vmName']=vmInfo['vmName'];
+    msg['content']=content;
+    return msg;
+
+def userDisConnVm(ip,userName,vmInfo):
+    msg = {};
+    msg['type'] = 'userDisConnVm';
+    content = {};
+    content['ip']=ip;
+    content['userName']=userName;
+    content['vmId']=vmInfo['vmId'];
+    content['vmName']=vmInfo['vmName'];
     msg['content']=content;
     return msg;

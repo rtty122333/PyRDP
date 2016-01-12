@@ -101,14 +101,13 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.clientCtl.login(str(self.userNameLineEdit.text()),str(self.pwdLineEdit.text()),str(self.roleComboBox.currentText()),self.loginCb)
 
     def logout(self):
-        self.clientCtl.logout(self.userId,self.logoutCb)
+        self.clientCtl.logout(self.userName,self.logoutCb)
 
     def loginCb(self,err,msg):
         if self.isSthWrong(err,msg,self.statusLabel):
             pass
         else:
             if msg['auth']=='success':
-                self.userId=msg['content']['userId']
                 self.userName=msg['content']['userName']
                 self.loginWidget.hide()
                 self.quitPushButton.hide()
@@ -171,7 +170,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.vmsTreeWidget.setHeaderLabel(u'详情')
             for userId in vms.keys():
                 item=vms[userId]
-                userItem=userTreeWidgetItem.UserTreeWidgetItem(self.vmsTreeWidget,item,self)
+                userItem=userTreeWidgetItem.UserTreeWidgetItem(self.vmsTreeWidget,userId,item,self)
                 self.usersVmsMap[userId]=userItem
             self.vmsWidget.hide()
             self.adminVmsWidget.show()
@@ -202,7 +201,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             for xIndex in range(0,10):
                 for yIndex in range(0,xSize):
                     if index<size:
-                        widgetTmp=cmpWidget.cmpWidget(self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,'img/cmp.png',vms[index]['userName'],vms[index]['vmName'],vms[index]['ip'],vms[index]['vmId'])
+                        widgetTmp=cmpWidget.cmpWidget(self,self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,'img/cmp.png',vms[index])
                         grid.addWidget(widgetTmp,xIndex,yIndex)
                     yIndex+=1
                     index+=1
@@ -232,7 +231,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.addUserLabel.setText(u'请输入完整信息')
         else:
             self.addUserLabel.clear()
-            self.clientCtl.addUser(self.userId,str(self.userNameLineEdit_user.text()),str(self.pwdLineEdit_user.text()),str(self.roleComboBox_user.currentText()),self.addUserCb)
+            self.clientCtl.addUser(self.userName,str(self.userNameLineEdit_user.text()),str(self.pwdLineEdit_user.text()),str(self.roleComboBox_user.currentText()),self.addUserCb)
 
     def addVm(self):
         if(len(self.vmIdLineEdit.text())==0 or len(self.vmUserNameLineEdit.text())==0 or len(self.vmNameLineEdit.text())==0 or len(self.ipLineEdit.text())==0 ):
@@ -240,7 +239,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         else:
             if(public.isValidIP(self.ipLineEdit.text())):
                 self.addVmLabel.clear()
-                self.clientCtl.addVm(self.userId,str(self.vmIdLineEdit.text()),str(self.vmUserNameLineEdit.text()),str(self.vmNameLineEdit.text()),str(self.ipLineEdit.text()),self.addVmCb)
+                self.clientCtl.addVm(self.userName,str(self.vmIdLineEdit.text()),str(self.vmUserNameLineEdit.text()),str(self.vmNameLineEdit.text()),str(self.ipLineEdit.text()),str(self.vmPwdLineEdit.text()),self.addVmCb)
             else:
                 self.addVmLabel.setText(u'请输入合法IP信息')
             
@@ -248,8 +247,8 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if self.isSthWrong(err,msg,self.addUserLabel):
             pass
         else:
-            userItem=userTreeWidgetItem.UserTreeWidgetItem(self.vmsTreeWidget,msg['content'],self)
-            self.usersVmsMap[str(msg['content']['userId'])]=userItem
+            userItem=userTreeWidgetItem.UserTreeWidgetItem(self.vmsTreeWidget,msg['content']['userName'],msg['content'],self)
+            self.usersVmsMap[msg['content']['userName']]=userItem
 
     def addVmCb(self,err,msg):
         if self.isSthWrong(err,msg,self.addVmLabel):
@@ -270,12 +269,12 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
     def itemChangedFunc(self):
         if len(self.vmsTreeWidget.selectedItems())==1:
             item=self.vmsTreeWidget.selectedItems()[0]
-            if self.currentItem==None or self.currentItem.flag!=item.flag or (item.flag=='vm' and (item.parent().userId+self.currentItem.parent().userId)!=0 and (item.parent().userId*self.currentItem.parent().userId)==0 ):
+            if self.currentItem==None or self.currentItem.flag!=item.flag or (item.flag=='vm' and ((item.parent().userId=='0' and self.currentItem.parent().userId!='0') or (item.parent().userId!='0' and self.currentItem.parent().userId=='0'))):
                 self.vmsTreeWidget.contextMenu=QtGui.QMenu(self.vmsTreeWidget)
                 self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.refreshIndexAction)
                 if item.flag=='vm':
                     self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.refreshAction)
-                    if item.parent().userId==0:
+                    if item.parent().userId=='0':
                         self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.distributeAction)
                     else:
                         self.vmsTreeWidget.contextMenu.addAction(self.vmsTreeWidget.removeAction)
@@ -288,7 +287,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         # if self.currentItem.flag=='vm':
         #     self.clientCtl.queryVm(self.currentItem.vmId,self.refreshItemsCb)
         # elif self.currentItem.flag=='user':
-        #     self.clientCtl.queryUserInfo(self.currentItem.userId,self.refreshItemsCb)
+        #     self.clientCtl.queryUserInfo(self.currentItem.userName,self.refreshItemsCb)
 
     def refreshItemsCb(self,err,msg):
         if self.isSthWrong(err,msg,self.adminVmsStatusLabel):
@@ -306,12 +305,12 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         #     removeMsg.setText(u'确定将虚拟机 '+self.currentItem.txt+u' 移入待分配设备吗？')
         #     removeMsg.exec_()
         #     if removeMsg.clickedButton()==yesBtn:
-        #         self.clientCtl.removeUserVm(self.currentItem.vmId,self.currentItem.state,self.currentItem.parent().userId,self.removeItemCb)
+        #         self.clientCtl.removeUserVm(self.currentItem.vmId,self.currentItem.state,self.currentItem.parent().userName,self.removeItemCb)
         # else:
         #     removeMsg.setText(u'确定删除 '+self.currentItem.parent().userName+u' 的虚拟机 '+self.currentItem.txt+u' 吗？')
         #     removeMsg.exec_()
         #     if removeMsg.clickedButton()==yesBtn:
-        #         self.clientCtl.removeUserVm(self.currentItem.vmId,self.currentItem.state,self.currentItem.parent().userId,self.removeItemCb)
+        #         self.clientCtl.removeUserVm(self.currentItem.vmId,self.currentItem.state,self.currentItem.parent().userName,self.removeItemCb)
 
     def removeItemCb(self,err,msg):
         if self.isSthWrong(err,msg,self.adminVmsStatusLabel):

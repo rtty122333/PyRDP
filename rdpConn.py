@@ -15,14 +15,15 @@ Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
-    def __init__(self,ip,userName):
+    def __init__(self,rdpIndex,info):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
         self.setupUi(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
-        self.ip=ip
-        self.cmpLineEdit.setText(self.ip)
-        self.accountTxtLable.setText(userName)
+        self.rdpIndex=rdpIndex
+        self.info=info
+        self.cmpLineEdit.setText(self.info['ip'])
+        self.accountTxtLable.setText(self.info['userName'])
         self.cmpLineEdit.setEchoMode(QtGui.QLineEdit.Password)
         self.cmpLineEdit_2.setEchoMode(QtGui.QLineEdit.Password);
         self.cmpLineEdit.setReadOnly(True)
@@ -200,7 +201,8 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         # self.adjustSize()
 
     def runCommand(self, cmdStr):
-        stdouterr = os.popen4(str(cmdStr))[1].read()
+        public.userConnVm(self.rdpIndex.clientCtl,str(cmdStr),self.rdpIndex.userName,self.info)
+        # stdouterr = os.popen4(str(cmdStr))[1].read()
 
     def defaultConnectFunc(self):
         if(public.isValidIP(self.cmpLineEdit.text())):

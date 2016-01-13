@@ -47,11 +47,11 @@ def queryRole(ip):
     msg['content']=content;
     return msg;
 
-def addUser(adminId,adminIp,adminMac,userName, password,roleName):
+def addUser(adminName,adminIp,adminMac,userName, password,roleName):
     msg = {};
     msg['type'] = 'addUser';
     content = {};
-    content['adminId']=adminId;
+    content['adminName']=adminName;
     content['adminIp']=adminIp;
     content['adminMac']=adminMac;
     content['userName']=userName;
@@ -60,11 +60,11 @@ def addUser(adminId,adminIp,adminMac,userName, password,roleName):
     msg['content']=content;
     return msg;
 
-def addVm(adminId,adminIp,adminMac,vmId,userName,vmName,ip,pwd):
+def addVm(adminName,adminIp,adminMac,vmId,userName,vmName,ip,pwd):
     msg = {};
     msg['type'] = 'addVm';
     content = {};
-    content['adminId']=adminId;
+    content['adminName']=adminName;
     content['adminIp']=adminIp;
     content['adminMac']=adminMac;
     content['vmId']=vmId;
@@ -75,11 +75,11 @@ def addVm(adminId,adminIp,adminMac,vmId,userName,vmName,ip,pwd):
     msg['content']=content;
     return msg;
 
-def addUserVm(adminId,adminIp,adminMac,userName,vmInfo):
+def addUserVm(adminName,adminIp,adminMac,userName,vmInfo):
     msg = {};
     msg['type'] = 'addUserVm';
     content = {};
-    content['adminId']=adminId;
+    content['adminName']=adminName;
     content['adminIp']=adminIp;
     content['adminMac']=adminMac;
     content['userName']=userName;
@@ -88,11 +88,11 @@ def addUserVm(adminId,adminIp,adminMac,userName,vmInfo):
     msg['content']=content;
     return msg;
     
-def removeUserVm(adminId,adminIp,adminMac,userName,vmInfo):
+def removeUserVm(adminName,adminIp,adminMac,userName,vmInfo):
     msg = {};
     msg['type'] = 'removeUserVm';
     content = {};
-    content['adminId']=adminId;
+    content['adminName']=adminName;
     content['adminIp']=adminIp;
     content['adminMac']=adminMac;
     content['vmId']=vmInfo['vmId'];

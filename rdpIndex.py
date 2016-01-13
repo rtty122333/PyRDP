@@ -251,12 +251,19 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         else:
             userItem=userTreeWidgetItem.UserTreeWidgetItem(self.vmsTreeWidget,msg['content']['userName'],msg['content'],self)
             self.usersVmsMap[msg['content']['userName']]=userItem
+            self.userNameLineEdit_user.clear()
+            self.pwdLineEdit_user.clear()
 
     def addVmCb(self,err,msg):
         if self.isSthWrong(err,msg,self.addVmLabel):
             pass
         else:
             self.usersVmsMap['0'].addVm(msg['content'])
+            self.vmIdLineEdit.clear()
+            self.vmUserNameLineEdit.clear()
+            self.vmNameLineEdit.clear()
+            self.ipLineEdit.clear()
+            self.vmPwdLineEdit.clear()
 
     def closeFunc(self):
         shutdown=QtGui.QMessageBox()

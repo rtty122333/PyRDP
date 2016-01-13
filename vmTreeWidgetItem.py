@@ -29,12 +29,12 @@ class VmTreeWidgetItem(QtGui.QTreeWidgetItem):
             # self.ip = vmInfo["ip"]
             # self.state = vmInfo["state"]
             # self.stateTime = vmInfo["stateTime"]
-            self.info=vmInfo
             self.txt = vmInfo['vmId'] + ' ' + vmInfo['userName'] + ' ' + vmInfo['vmName'] + ' ' + vmInfo['ip']
             self.setText(0, self.txt)
-            self.refreshSelf(self.info)
+            self.refreshSelf(vmInfo)
             
     def refreshSelf(self,vmInfo ):
+        self.info=vmInfo
         if vmInfo['state'] == 2:
             self.setIcon(0, QtGui.QIcon("img/cmpOnline.png"))
         else:
@@ -53,6 +53,9 @@ class VmTreeWidgetItem(QtGui.QTreeWidgetItem):
             removeMsg.exec_()
             if removeMsg.clickedButton()==yesBtn:
                 self.rdpIndex.clientCtl.removeUserVm(self.rdpIndex.userName,self.info,self.parent().userName,cb)
+        elif self.info['state']==2:
+            removeMsg.setText(u'用户正在连接，请稍后再试。')
+            removeMsg.exec_()
         else:
             removeMsg.setText(u'确定删除 '+self.parent().userName+u' 的虚拟机 '+self.txt+u' 吗？')
             removeMsg.exec_()

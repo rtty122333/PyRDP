@@ -113,6 +113,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
                 self.userName=msg['content']['userName']
                 self.loginWidget.hide()
                 self.quitPushButton.hide()
+                self.backWidget.hide()
                 self.loginUserLabel.setText(self.userNameLineEdit.text())
                 self.refreshVms(msg['content']['vmMap'])
                 self.indexWidget.show()
@@ -127,6 +128,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.quitPushButton.show()
             self.indexWidget.hide()
             self.loginWidget.show()
+            self.backWidget.show()
 
     def refreshLogin(self):
         self.clientCtl.queryRole(self.queryRoleCb)

@@ -1,3 +1,4 @@
+# from socket import requestClient as client
 from socket import client
 from socket import clientPackHandler
 import json
@@ -81,33 +82,3 @@ class clientCtl():
             return cb(err+' reply is null',None)
         else:
             return cb(err,json.loads(msg))
-
-def cleanCmdkeyEnv():
-    process = subprocess.Popen(
-        'cmdkey /list', shell=False, stdout=subprocess.PIPE)
-    while process.poll() == None:
-        line = process.stdout.readlines()
-        for index in line:
-            lineShuzu = index.strip().split('\r\n')
-            for val in lineShuzu:
-                if len(val) > 0 and 'target' in val:
-                    target = val.split(':')
-                    if len(target) == 3:
-                        name = target[2]
-                        name = name[name.index('=') + 1:]
-                        if public.isValidIP(name):
-                            delePro = subprocess.Popen(
-                                'cmdkey /delete:' + name, shell=False)
-                            delePro.wait()
-                            delePro.terminate()
-    process.terminate()
-
-def initCmdkeyEnv(vmInfoList):
-    for item in vmInfoList:
-        target = item['ip']
-        user = item['userName']
-        pwd = item['password']
-        cmd = 'cmdkey /add:' + target + ' /user:' + user + ' /pass:' + pwd
-        process = subprocess.Popen(cmd, shell=False)
-        process.wait()
-        process.terminate()

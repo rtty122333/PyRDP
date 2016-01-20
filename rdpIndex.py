@@ -14,6 +14,7 @@ import distributeVm
 import userTreeWidgetItem
 import vmTreeWidgetItem
 from control import public
+from config import config
 
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
@@ -42,6 +43,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         #clientCtl.queryRole(self.queryRoleCb)
         self.roleComboBox.addItem(u'普通用户')
         self.roleComboBox.addItem(u'管理员')
+        self.config=config.Config()
 
         self.initWin()
         self.initConfig()
@@ -93,14 +95,14 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.statusLabel.clear()
             self.roleComboBox.clear()
             for i in range(0,len(msg['content'])):
-                self.roleComboBox.addItem(msg['content'][i])
+                self.roleComboBox.addItem(self.config.getRoleMap()[msg['content'][i]])
 
     def login(self):
         if(len(self.userNameLineEdit.text())==0 or len(self.pwdLineEdit.text())==0):
             self.statusLabel.setText(u'请输入完整信息')
         else:
             self.statusLabel.clear()
-            self.clientCtl.login(str(self.userNameLineEdit.text()),str(self.pwdLineEdit.text()),str(self.roleComboBox.currentText()),self.loginCb)
+            self.clientCtl.login(str(self.userNameLineEdit.text()),str(self.pwdLineEdit.text()),self.config.getRoleMap()[str(self.roleComboBox.currentText())],self.loginCb)
 
     def logout(self):
         self.clientCtl.logout(self.userName,self.logoutCb)
@@ -237,7 +239,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.addUserLabel.setText(u'请输入完整信息')
         else:
             self.addUserLabel.clear()
-            self.clientCtl.addUser(self.userName,str(self.userNameLineEdit_user.text()),str(self.pwdLineEdit_user.text()),str(self.roleComboBox_user.currentText()),self.addUserCb)
+            self.clientCtl.addUser(self.userName,str(self.userNameLineEdit_user.text()),str(self.pwdLineEdit_user.text()),self.config.getRoleMap()[str(self.roleComboBox_user.currentText())],self.addUserCb)
 
     def addVm(self):
         if(len(self.vmIdLineEdit.text())==0 or len(self.vmUserNameLineEdit.text())==0 or len(self.vmNameLineEdit.text())==0 or len(self.ipLineEdit.text())==0 ):

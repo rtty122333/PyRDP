@@ -105,7 +105,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             self.clientCtl.login(str(self.userNameLineEdit.text()),str(self.pwdLineEdit.text()),self.config.getRoleMap()[str(self.roleComboBox.currentText())],self.loginCb)
 
     def logout(self):
-        self.clientCtl.logout(self.userName,self.logoutCb)
+        self.clientCtl.logout(self.userName,self.config.getRoleMap()[str(self.roleComboBox.currentText())],self.logoutCb)
 
     def loginCb(self,err,msg):
         if self.isSthWrong(err,msg,self.statusLabel):

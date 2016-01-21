@@ -9,11 +9,12 @@ def authUser(userName, password,roleName, ip,mac):
     content['mac']=mac;
     msg['content']=content;
     return msg;
-def logout(userName,ip,mac):
+def logout(userName,roleName,ip,mac):
     msg = {};
     msg['type'] = 'logout';
     content = {};
     content['userName']=userName;
+    content['role']=roleName;
     content['ip']=ip;
     content['mac']=mac;
     msg['content']=content;

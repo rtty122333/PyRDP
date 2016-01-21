@@ -32,8 +32,8 @@ class clientCtl():
         msg=clientPackHandler.authUser(userName,password,role,self.IP,self.MAC)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def logout(self,userName,cb):
-        msg=clientPackHandler.logout(userName,self.IP,self.MAC)
+    def logout(self,userName,roleName,cb):
+        msg=clientPackHandler.logout(userName,roleName,self.IP,self.MAC)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
     def queryUser(self,userName,cb):

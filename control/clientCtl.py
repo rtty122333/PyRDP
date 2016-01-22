@@ -1,6 +1,9 @@
+# from socket import requestClient as client
 from socket import client
 from socket import clientPackHandler
 import json
+import public
+import subprocess
 
 
 class clientCtl():
@@ -10,6 +13,7 @@ class clientCtl():
         self.PORT = 8894
         self.IP=client.getSelfIP()
         self.outIP=client.getOutIP()
+        self.MAC=client.getMacAddr()
 
     def initServerSetting(self,host,port):
         self.HOST=host
@@ -20,21 +24,24 @@ class clientCtl():
 
     def getOutIP(self):
         return self.outIP
-        
+
+    def getMacAddr(self):
+        return self.MAC
+
     def login(self,userName,password,role,cb):
-        msg=clientPackHandler.authUser(userName,password,role,self.IP)
+        msg=clientPackHandler.authUser(userName,password,role,self.IP,self.MAC)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def logout(self,userId,cb):
-        msg=clientPackHandler.logout(userId,self.IP)
+    def logout(self,userName,roleName,cb):
+        msg=clientPackHandler.logout(userName,roleName,self.IP,self.MAC)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
     def queryUser(self,userName,cb):
         msg=clientPackHandler.queryUser(userName)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def queryUserInfo(self,userId,cb):
-        msg=clientPackHandler.queryUserInfo(userId)
+    def queryUserInfo(self,userName,cb):
+        msg=clientPackHandler.queryUserInfo(userName)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
     def queryVm(self,vmId,cb):
@@ -46,19 +53,27 @@ class clientCtl():
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
     def addUser(self,adminId,userName,password,role,cb):
-        msg=clientPackHandler.addUser(adminId,self.IP,userName, password,role)
+        msg=clientPackHandler.addUser(adminId,self.IP,self.MAC,userName, password,role)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def addVm(self,adminId,vmId,userName,vmName,ip,cb):
-        msg=clientPackHandler.addVm(adminId,self.IP,vmId,userName,vmName,ip)
+    def addVm(self,adminId,vmId,userName,vmName,ip,pwd,cb):
+        msg=clientPackHandler.addVm(adminId,self.IP,self.MAC,vmId,userName,vmName,ip,pwd)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def addUserVm(self,adminId,userId,vmId,cb):
-        msg=clientPackHandler.addUserVm(adminId,self.IP,userId,vmId)
+    def addUserVm(self,adminId,userName,vmInfo,cb):
+        msg=clientPackHandler.addUserVm(adminId,self.IP,self.MAC,userName,vmInfo)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
-    def removeUserVm(self,adminId,vmId,state,userId,cb):
-        msg=clientPackHandler.removeUserVm(adminId,self.IP,vmId,state,userId)
+    def removeUserVm(self,adminId,vmInfo,userName,cb):
+        msg=clientPackHandler.removeUserVm(adminId,self.IP,self.MAC,userName,vmInfo)
+        client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
+
+    def userConnVm(self,userName,vmInfo,cb):
+        msg=clientPackHandler.userConnVm(self.IP,self.MAC,userName,vmInfo)
+        client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
+
+    def userDisConnVm(self,userName,vmInfo,cb):
+        msg=clientPackHandler.userDisConnVm(self.IP,self.MAC,userName,vmInfo)
         client.client(json.dumps(msg),self.HOST,self.PORT,cb,self.cbTmp)
 
     def cbTmp(self,err,msg,cb):

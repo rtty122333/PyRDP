@@ -39,7 +39,7 @@ class DistributeVmWidget(QtGui.QWidget, Distri_QWidget):
             else:
                 self.distriStatusLabel.clear()
                 self.toUserItem=userItem
-                self.rdpIndex.clientCtl.addUserVm(self.rdpIndex.userId,userItem.userId,self.vmItem.info['vmId'],self.addUserVmCb)
+                self.rdpIndex.clientCtl.addUserVm(self.rdpIndex.userName,userItem.userName,self.vmItem.info,self.addUserVmCb)
 
     def addUserVmCb(self,err,msg):
         if self.rdpIndex.isSthWrong(err,msg,self.distriStatusLabel):

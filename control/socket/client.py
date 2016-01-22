@@ -2,29 +2,35 @@ import socket
 import time
 import re,urllib2
 import os
+import uuid
 assert 'SYSTEMROOT' in os.environ
 
-
+bufSize=1024
 
 def client(msg,host,port,finalCb,cb):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    rst=''
     try:
         sock.connect((host,port))
         time.sleep(2)
         sock.send(msg)
         sock.settimeout(5)
-        rst=sock.recv(8092)
-        sock.close()
-        return cb(None,rst,finalCb)
+        rst=[]
+        while True:
+            buf=sock.recv(bufSize)
+            if buf[len(buf)-1]=='|':
+                buf=buf[0:-1]
+                rst.append(buf)
+                break
+            else:
+                rst.append(buf)
+        return cb(None,''.join(rst),finalCb)
+
     except:
         #print 'fail to connect to ther server '+host+':'+str(port)
-        sock.close()
-        if len(rst)==0:
-            return cb('fail to connect to server '+host+':'+str(port),None,finalCb)
+        return cb('fail to connect to server '+host+':'+str(port),None,finalCb)
     #time.sleep(10)
-    # finally:
-    #     sock.close()
+    finally:
+        sock.close()
 
 def getSelfIP():
     ipInfoList=socket.gethostbyname_ex(socket.gethostname())
@@ -63,3 +69,7 @@ class Getmyip:
 def getOutIP():
     getmyip = Getmyip()
     return getmyip.getip()
+
+def getMacAddr(): 
+    mac=uuid.UUID(int = uuid.getnode()).hex[-12:] 
+    return ":".join([mac[e:e+2] for e in range(0,11,2)])

@@ -7,11 +7,11 @@ from control import clientCtl
 
 class UserTreeWidgetItem(QtGui.QTreeWidgetItem):
 
-    def __init__(self, parent, userInfo,rdpIndex):
+    def __init__(self, parent, userId,userInfo,rdpIndex):
         super(UserTreeWidgetItem, self).__init__(parent,QtGui.QTreeWidgetItem.Type)
         self.rdpIndex=rdpIndex
         self.flag='user'
-        self.userId = userInfo["userId"]
+        self.userId = userId
         self.userName = userInfo["userName"]
         self.setText(0, self.userName)
         self.refreshSelf(userInfo)

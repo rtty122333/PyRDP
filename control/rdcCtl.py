@@ -3,8 +3,11 @@ import re
 import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
+from control import public
 
-qtCreatorFile = "ui/rdcD.ui"
+curdir = public.cur_file_dir()
+
+qtCreatorFile = curdir+"/ui/rdcD.ui"
 
 Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 

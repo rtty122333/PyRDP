@@ -16,12 +16,17 @@ import vmTreeWidgetItem
 from control import public
 from config import config
 
-reload(sys) 
-sys.setdefaultencoding( "utf-8" )
 
-qtCreatorFile = "ui/rdpIndex.ui"
+sys.setdefaultencoding( "utf-8" )
+reload(sys) 
+
+curdir = public.cur_file_dir()
+
+qtCreatorFile = curdir+"/ui/rdpIndex.ui"
 
 Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
+
+
 
 
 
@@ -61,8 +66,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.loginRefreshPBtn.clicked.connect(self.refreshLogin)
         self.settingPBtn.clicked.connect(self.settingFunc)
         # public.cleanCmdkeyEnv()
-
+		
         self.showFullScreen()
+
 
     def initWin(self):
         self.winWidth=win32api.GetSystemMetrics(0)

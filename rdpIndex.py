@@ -77,10 +77,11 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.loginWidget.move(self.winWidth/2-self.loginWidget.width()/2,self.winHight/2-self.loginWidget.height()/2)
         self.indexWidget.move(self.winWidth/2-self.indexWidget.width()/2,self.winHight/10)
         self.backWidget = QtGui.QWidget(self)
-        self.logodir = os.path.join(self.currentDir,"img","logo.png")
-        self.backstylesheet = "QWidget{background:url(%s);background-attachment:fixed;background-repeat:no-repeat}" % self.logodir
-        print self.backstylesheet
-        self.backWidget.setStyleSheet(self.backstylesheet)
+        logodir = os.path.join(self.currentDir,"img","logo.png")
+        logodir = logodir.replace('\\','/')
+        backstylesheet = "QWidget{background:url(%s);background-attachment:fixed;background-repeat:no-repeat}" % logodir
+        
+        self.backWidget.setStyleSheet(backstylesheet)
         self.backWidget.setGeometry(self.winWidth/2-250,self.winHight/2-self.loginWidget.height()/2-90,500,168)
         self.indexWidget.hide()
 

@@ -9,7 +9,9 @@ from control import public
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
 
-qtCreatorFile = "ui/distributeVm.ui"
+curdir = public.cur_file_dir()
+
+qtCreatorFile = curdir+"/ui/distributeVm.ui"
 
 Distri_QWidget, QtBaseClass = uic.loadUiType(qtCreatorFile)
 

@@ -4,6 +4,7 @@ import vmTreeWidgetItem
 from control import public
 from control import clientCtl
 
+curdir = public.cur_file_dir()
 
 class UserTreeWidgetItem(QtGui.QTreeWidgetItem):
 
@@ -22,9 +23,9 @@ class UserTreeWidgetItem(QtGui.QTreeWidgetItem):
         while(self.child(0)):
             self.removeChild(self.child(0))
         if userInfo['userState']==1:
-            self.setIcon(0, QtGui.QIcon("img/userOnline.png"))
+            self.setIcon(0, QtGui.QIcon(curdir+"/img/userOnline.png"))
         else:
-            self.setIcon(0, QtGui.QIcon("img/userOffline.png"))
+            self.setIcon(0, QtGui.QIcon(curdir+"/img/userOffline.png"))
         for index in range(0, len(userInfo['vmMap'])):
             vm = userInfo['vmMap'][index]
             vmItem=vmTreeWidgetItem.VmTreeWidgetItem(self,vm,index,self.rdpIndex)

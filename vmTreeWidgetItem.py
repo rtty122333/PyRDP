@@ -3,6 +3,7 @@ from PyQt4 import QtGui, QtCore
 from control import public
 from control import clientCtl
 
+curdir = public.cur_file_dir()
 
 class VmTreeWidgetItem(QtGui.QTreeWidgetItem):
 
@@ -36,9 +37,9 @@ class VmTreeWidgetItem(QtGui.QTreeWidgetItem):
     def refreshSelf(self,vmInfo ):
         self.info=vmInfo
         if vmInfo['state'] == 2:
-            self.setIcon(0, QtGui.QIcon("img/cmpOnline.png"))
+            self.setIcon(0, QtGui.QIcon(curdir+"/img/cmpOnline.png"))
         else:
-            self.setIcon(0, QtGui.QIcon("img/cmpOffline.png"))
+            self.setIcon(0, QtGui.QIcon(curdir+"/img/cmpOffline.png"))
 
     def refreshItem(self,cb):
         self.rdpIndex.clientCtl.queryVm(self.info['vmId'],cb)

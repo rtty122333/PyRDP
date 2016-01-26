@@ -48,7 +48,7 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
         self.initEquipConent()
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap('img/rdc.ico'),
+        icon.addPixmap(QtGui.QPixmap(curdir+'/img/rdc.ico'),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
         self.initDeskSize()

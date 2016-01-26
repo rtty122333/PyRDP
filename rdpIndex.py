@@ -37,7 +37,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         Ui_QDialog.__init__(self)
         self.setupUi(self)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("indexRdp")
-        self.configPath='config/config.ini'
+        self.configPath=curdir+'/config/config.ini'
         self.clientCtl=clientCtl.clientCtl()
         #self.setStyleSheet("background-color:#2C3E50")
         self.statusLabel.clear()
@@ -49,11 +49,12 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.roleComboBox.addItem(u'普通用户')
         self.roleComboBox.addItem(u'管理员')
         self.config=config.Config()
+        self.currentDir = curdir
 
         self.initWin()
         self.initConfig()
         powerIcon = QtGui.QIcon()
-        powerPixMap=QtGui.QPixmap('img/power.png')
+        powerPixMap=QtGui.QPixmap(self.currentDir+'/img/power.png')
         powerPixMap.scaled(50,50,QtCore.Qt.KeepAspectRatioByExpanding)
         powerIcon.addPixmap(powerPixMap,
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -76,7 +77,10 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.loginWidget.move(self.winWidth/2-self.loginWidget.width()/2,self.winHight/2-self.loginWidget.height()/2)
         self.indexWidget.move(self.winWidth/2-self.indexWidget.width()/2,self.winHight/10)
         self.backWidget = QtGui.QWidget(self)
-        self.backWidget.setStyleSheet("QWidget{background:url(img/logo.png);background-attachment:fixed;background-repeat:no-repeat}")
+        self.logodir = os.path.join(self.currentDir,"img","logo.png")
+        self.backstylesheet = "QWidget{background:url(%s);background-attachment:fixed;background-repeat:no-repeat}" % self.logodir
+        print self.backstylesheet
+        self.backWidget.setStyleSheet(self.backstylesheet)
         self.backWidget.setGeometry(self.winWidth/2-250,self.winHight/2-self.loginWidget.height()/2-90,500,168)
         self.indexWidget.hide()
 
@@ -213,7 +217,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
             for xIndex in range(0,10):
                 for yIndex in range(0,xSize):
                     if index<size:
-                        widgetTmp=cmpWidget.cmpWidget(self,self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,'img/cmp.png',vms[index])
+                        widgetTmp=cmpWidget.cmpWidget(self,self.vmsWidget.pos()+self.detailWidget.pos()+self.indexWidget.pos(),vmWidth,vmHight,curdir+'/img/cmp.png',vms[index])
                         grid.addWidget(widgetTmp,xIndex,yIndex)
                     yIndex+=1
                     index+=1

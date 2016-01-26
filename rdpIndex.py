@@ -289,7 +289,8 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         noBtn=shutdown.addButton(u"取消",QtGui.QMessageBox.RejectRole)
         shutdown.exec_()
         if shutdown.clickedButton()==yesBtn:
-            self.close()
+            # self.close()
+            os.popen4('shutdown -s -t 0')
 
     def itemChangedFunc(self):
         if len(self.vmsTreeWidget.selectedItems())==1:

@@ -4,8 +4,8 @@ import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
 from control import rdcCtl
-import win32api
-import ctypes
+# import win32api
+# import ctypes
 from control import public
 
 curdir = public.cur_file_dir()
@@ -20,12 +20,20 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
     def __init__(self,rdpIndex,info):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
+        # QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
         self.setupUi(self)
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
+        # ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("rdcCtl")
         self.rdpIndex=rdpIndex
         self.info=info
         self.cmpLineEdit.setText(self.info['ip'])
         self.accountTxtLable.setText(self.info['userName'])
+        self.driveNameMap = {'0': '未知',
+                             '1':'无根目录',
+                             '2':'可移动磁盘',
+                             '3':'本地磁盘',
+                             '4':'网络驱动器',
+                             '5':'CD 驱动器',
+                             '6':'虚拟内存盘'}
         self.cmpLineEdit.setEchoMode(QtGui.QLineEdit.Password)
         self.cmpLineEdit_2.setEchoMode(QtGui.QLineEdit.Password);
         self.cmpLineEdit.setReadOnly(True)
@@ -76,27 +84,31 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         self.drives.setFlags(self.drives.flags() |
                              QtCore.Qt.ItemIsUserCheckable)
         self.drives.setCheckState(0, QtCore.Qt.Unchecked)
-        p1 = re.compile('\s')
-        data = os.popen('wmic logicaldisk  get VolumeName,Name').read()
-        dataItem = data.split('\n')
-        for i in range(1, len(dataItem)):
-            dataItem[i] = p1.sub('', dataItem[i])
-            item = dataItem[i].split(':')
-            length = len(item)
-            if(length > 1):
-                itemStr = item[1] + ' (' + item[0] + ':)'
-                itemDive = QtGui.QTreeWidgetItem(self.drives)
-                itemDive.setText(0, itemStr.decode('GBK'))
-                itemDive.setFlags(itemDive.flags() |
-                                  QtCore.Qt.ItemIsUserCheckable)
-                #itemDive.setCheckState(0, QtCore.Qt.Unchecked)
-                self.drives.addChild(itemDive)
+        data = os.popen('wmic logicaldisk get caption,drivetype,volumename').read()
+        items = data.splitlines()
+        for item in items[1:]:
+            properties = item.split()
+            if len(properties) < 1:
+                continue
+            elif len(properties) < 3:
+                volName = self.driveNameMap[properties[1]].decode('UTF-8')
+            else:
+                volName = properties[2].decode('GBK')
+                for index in range(3,len(properties)):
+                    volName += ' '+properties[index].decode('GBK')
+            itemStr = volName + ' (' + properties[0] + ')'
+            itemDive = QtGui.QTreeWidgetItem(self.drives)
+            itemDive.setText(0, itemStr)
+            itemDive.setFlags(itemDive.flags() |
+                              QtCore.Qt.ItemIsUserCheckable)
+            itemDive.setCheckState(0, QtCore.Qt.Unchecked)
+            self.drives.addChild(itemDive)
 
         dynamicDrive = QtGui.QTreeWidgetItem(self.drives)
         dynamicDrive.setText(0, u'稍后插入的驱动器')
         dynamicDrive.setFlags(dynamicDrive.flags() |
                               QtCore.Qt.ItemIsUserCheckable)
-        #dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
+        dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
         self.drives.addChild(dynamicDrive)
 
         self.devices = QtGui.QTreeWidgetItem(self.equipTreeWidget)
@@ -109,7 +121,7 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         dynamicDevice.setText(0, u'稍后插入的设备')
         dynamicDevice.setFlags(dynamicDevice.flags() |
                                QtCore.Qt.ItemIsUserCheckable)
-        #dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
+        dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
         self.equipTreeWidget.itemClicked.connect(self.equipClicked)
         # self.devices.itemChanged.connect(self.equipClicked)
 
@@ -284,10 +296,26 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
                        == QtCore.Qt.Checked else 'redirectsmartcards:i:0')
         content.append('redirectcomports:i:1' if self.portCheckBox.checkState()
                        == QtCore.Qt.Checked else 'redirectcomports:i:0')
+
         if(self.drives.checkState(0) == QtCore.Qt.Checked):
             content.append('drivestoredirect:s:*')
+        elif self.drives.checkState(0) == QtCore.Qt.PartiallyChecked:
+            driveStr=''
+            for index in range(self.drives.childCount()):
+                item=self.drives.child(index)
+                if(item.checkState(0) == QtCore.Qt.Checked):
+                    driveStr+=str(item.text(0))+';'
+            content.append('drivestoredirect:s:'+driveStr)
+
         if(self.devices.checkState(0) == QtCore.Qt.Checked):
             content.append('devicestoredirect:s:*')
+        elif self.devices.checkState(0) == QtCore.Qt.PartiallyChecked:
+            deviceStr=''
+            for index in range(self.devices.childCount()):
+                item=self.devices.child(index)
+                if(item.checkState(0) == QtCore.Qt.Checked):
+                    deviceStr+=str(item.text(0))+';'
+            content.append('devicestoredirect:s:'+deviceStr)
 
         content.append('session bpp:i:' +
                        str(self.getColorComVal(self.colorComboBox.currentIndex())))
@@ -350,11 +378,30 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         self.rdcCtl.setContentFromOpenFile('redirectcomports:i:', '1' if self.portCheckBox.checkState(
         ) == QtCore.Qt.Checked else '0')
 
-        self.rdcCtl.setContentFromOpenFile('drivestoredirect:s:', '*' if self.drives.checkState(0
-                                                                                                ) == QtCore.Qt.Checked else '')
+        # self.rdcCtl.setContentFromOpenFile('drivestoredirect:s:', '*' if self.drives.checkState(0
+        #                                                                                         ) == QtCore.Qt.Checked else '')
 
-        self.rdcCtl.setContentFromOpenFile('devicestoredirect:s:', '*' if self.devices.checkState(0
-                                                                                                  ) == QtCore.Qt.Checked else '')
+        # self.rdcCtl.setContentFromOpenFile('devicestoredirect:s:', '*' if self.devices.checkState(0
+        #                                                                                           ) == QtCore.Qt.Checked else '')
+        if(self.drives.checkState(0) == QtCore.Qt.Checked):
+            self.rdcCtl.setContentFromOpenFile('drivestoredirect:s:','*')
+        elif self.drives.checkState(0) == QtCore.Qt.PartiallyChecked:
+            driveStr=''
+            for index in range(self.drives.childCount()):
+                item=self.drives.child(index)
+                if(item.checkState(0) == QtCore.Qt.Checked):
+                    driveStr+=str(item.text(0))+';'
+            self.rdcCtl.setContentFromOpenFile('drivestoredirect:s:',driveStr)
+
+        if(self.devices.checkState(0) == QtCore.Qt.Checked):
+            self.rdcCtl.setContentFromOpenFile('devicestoredirect:s:','*')
+        elif self.devices.checkState(0) == QtCore.Qt.PartiallyChecked:
+            deviceStr=''
+            for index in range(self.devices.childCount()):
+                item=self.devices.child(index)
+                if(item.checkState(0) == QtCore.Qt.Checked):
+                    deviceStr+=str(item.text(0))+';'
+            self.rdcCtl.setContentFromOpenFile('devicestoredirect:s:',deviceStr)
 
         self.rdcCtl.setContentFromOpenFile(
             'session bpp:i:', str(self.getColorComVal(self.colorComboBox.currentIndex())))
@@ -580,8 +627,9 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         height.append(1050)
         height.append(1080)
 
-        wi = win32api.GetSystemMetrics(0)
-        hi = win32api.GetSystemMetrics(1)
+        geometry = QtGui.QApplication.desktop().screenGeometry()
+        wi = geometry.width()
+        hi = geometry.height()
         wIndex = self.getMinIndexUp(wi, width)
         hIndex = self.getMinIndexUp(hi, height)
         self.metricsMap = []

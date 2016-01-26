@@ -3,8 +3,8 @@ import re
 import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
-import win32api
-import ctypes
+# import win32api
+# import ctypes
 from control import clientCtl
 import json
 import math
@@ -27,16 +27,14 @@ qtCreatorFile = curdir+"/ui/rdpIndex.ui"
 Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 
-
-
-
 class MyDialog(QtGui.QDialog, Ui_QDialog):
 
     def __init__(self):
         QtGui.QDialog.__init__(self)
         Ui_QDialog.__init__(self)
+        #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
         self.setupUi(self)
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("indexRdp")
+        # ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("indexRdp")
         self.configPath=curdir+'/config/config.ini'
         self.clientCtl=clientCtl.clientCtl()
         #self.setStyleSheet("background-color:#2C3E50")
@@ -72,8 +70,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
 
     def initWin(self):
-        self.winWidth=win32api.GetSystemMetrics(0)
-        self.winHight = win32api.GetSystemMetrics(1)
+        geometry = QtGui.QApplication.desktop().screenGeometry()
+        self.winWidth=geometry.width()
+        self.winHight=geometry.height()
         self.loginWidget.move(self.winWidth/2-self.loginWidget.width()/2,self.winHight/2-self.loginWidget.height()/2)
         self.indexWidget.move(self.winWidth/2-self.indexWidget.width()/2,self.winHight/10)
         self.backWidget = QtGui.QWidget(self)

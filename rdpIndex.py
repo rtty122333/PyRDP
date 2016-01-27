@@ -92,7 +92,27 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         port = settings.value(r'port').toString()
         self.clientCtl.initServerSetting(host,int(port))
         settings.endGroup()
+        self.blacklist=None
+        settings.beginGroup('blacklist')
+        settings.setIniCodec('UTF-8')
+        drives = str(settings.value(r'drives').toString())
+        devices = str(settings.value(r'devices').toString())
+        if drives is not None and len(drives)>0 :
+            self.blacklist={}
+            self.blacklist['drives']=drives.split(';')
 
+        if devices is not None and len(devices)>0:
+            if self.blacklist is None:
+                self.blacklist={}
+                self.blacklist['drives']=[]
+            elif self.blacklist['drives'] is None:
+                self.blacklist['drives']=[]
+            self.blacklist['devices']=devices.split()
+        elif self.blacklist is not None:
+            self.blacklist['devices']=[]
+        print self.blacklist
+
+        settings.endGroup()
 
     def settingFunc(self):
         self.settingDialog=setting.SettingWidget(self)

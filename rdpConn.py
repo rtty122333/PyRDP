@@ -34,6 +34,14 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
                              '4':'网络驱动器',
                              '5':'CD 驱动器',
                              '6':'虚拟内存盘'}
+
+        if self.rdpIndex.blacklist is None:
+            #self.blacklist = {"drives": ["C:", "D:"], "devices": ["*"]}
+            #self.blacklist = {"drives": [u"本地磁盘", u"CD 驱动器"], "devices": []}
+            self.blacklist = {"drives": [], "devices": []}
+        else:
+            self.blacklist = self.rdpIndex.blacklist
+
         self.cmpLineEdit.setEchoMode(QtGui.QLineEdit.Password)
         self.cmpLineEdit_2.setEchoMode(QtGui.QLineEdit.Password);
         self.cmpLineEdit.setReadOnly(True)
@@ -84,32 +92,38 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         self.drives.setFlags(self.drives.flags() |
                              QtCore.Qt.ItemIsUserCheckable)
         self.drives.setCheckState(0, QtCore.Qt.Unchecked)
-        data = os.popen('wmic logicaldisk get caption,drivetype,volumename').read()
-        items = data.splitlines()
-        for item in items[1:]:
-            properties = item.split()
-            if len(properties) < 1:
-                continue
-            elif len(properties) < 3:
-                volName = self.driveNameMap[properties[1]].decode('UTF-8')
-            else:
-                volName = properties[2].decode('GBK')
-                for index in range(3,len(properties)):
-                    volName += ' '+properties[index].decode('GBK')
-            itemStr = volName + ' (' + properties[0] + ')'
-            itemDive = QtGui.QTreeWidgetItem(self.drives)
-            itemDive.setText(0, itemStr)
-            itemDive.setFlags(itemDive.flags() |
-                              QtCore.Qt.ItemIsUserCheckable)
-            itemDive.setCheckState(0, QtCore.Qt.Unchecked)
-            self.drives.addChild(itemDive)
 
-        dynamicDrive = QtGui.QTreeWidgetItem(self.drives)
-        dynamicDrive.setText(0, u'稍后插入的驱动器')
-        dynamicDrive.setFlags(dynamicDrive.flags() |
-                              QtCore.Qt.ItemIsUserCheckable)
-        dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
-        self.drives.addChild(dynamicDrive)
+        if '*' in self.blacklist['drives']:
+            self.drives.setDisabled(True)
+        else:
+            data = os.popen('wmic logicaldisk get caption,drivetype,volumename').read()
+            items = data.splitlines()
+            for item in items[1:]:
+                properties = item.split()
+                if len(properties) < 1:
+                    continue
+                elif len(properties) < 3:
+                    volName = self.driveNameMap[properties[1]].decode('UTF-8')
+                else:
+                    volName = properties[2].decode('GBK')
+                    for index in range(3,len(properties)):
+                        volName += ' '+properties[index].decode('GBK')
+                if volName in self.blacklist['drives']:
+                        continue
+                itemStr = volName + ' (' + properties[0] + ')'
+                itemDive = QtGui.QTreeWidgetItem(self.drives)
+                itemDive.setText(0, itemStr)
+                itemDive.setFlags(itemDive.flags() |
+                                  QtCore.Qt.ItemIsUserCheckable)
+                itemDive.setCheckState(0, QtCore.Qt.Unchecked)
+                self.drives.addChild(itemDive)
+
+            dynamicDrive = QtGui.QTreeWidgetItem(self.drives)
+            dynamicDrive.setText(0, u'稍后插入的驱动器')
+            dynamicDrive.setFlags(dynamicDrive.flags() |
+                                  QtCore.Qt.ItemIsUserCheckable)
+            dynamicDrive.setCheckState(0, QtCore.Qt.Unchecked)
+            self.drives.addChild(dynamicDrive)
 
         self.devices = QtGui.QTreeWidgetItem(self.equipTreeWidget)
         self.devices.setText(0, u'其他支持的即插即用(PnP)设备')
@@ -117,11 +131,15 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
                               QtCore.Qt.ItemIsUserCheckable)
         self.devices.setCheckState(0, QtCore.Qt.Unchecked)
 
-        dynamicDevice = QtGui.QTreeWidgetItem(self.devices)
-        dynamicDevice.setText(0, u'稍后插入的设备')
-        dynamicDevice.setFlags(dynamicDevice.flags() |
-                               QtCore.Qt.ItemIsUserCheckable)
-        dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
+        if '*' in self.blacklist['devices']:
+            self.devices.setDisabled(True)
+        else:
+            dynamicDevice = QtGui.QTreeWidgetItem(self.devices)
+            dynamicDevice.setText(0, u'稍后插入的设备')
+            dynamicDevice.setFlags(dynamicDevice.flags() |
+                                   QtCore.Qt.ItemIsUserCheckable)
+            dynamicDevice.setCheckState(0, QtCore.Qt.Unchecked)
+
         self.equipTreeWidget.itemClicked.connect(self.equipClicked)
         # self.devices.itemChanged.connect(self.equipClicked)
 

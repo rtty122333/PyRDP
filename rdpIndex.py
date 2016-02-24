@@ -30,7 +30,7 @@ Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 class MyDialog(QtGui.QDialog, Ui_QDialog):
 
     def __init__(self):
-        QtGui.QDialog.__init__(self)
+        QtGui.QDialog.__init__(self,None,QtCore.Qt.WindowStaysOnBottomHint)
         Ui_QDialog.__init__(self)
         #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
         self.setupUi(self)

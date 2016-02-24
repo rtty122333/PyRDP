@@ -18,7 +18,7 @@ Ui_QDialog, QtBaseClass = uic.loadUiType(qtCreatorFile)
 class RDPDialog(QtGui.QDialog, Ui_QDialog):
 
     def __init__(self,rdpIndex,info):
-        QtGui.QDialog.__init__(self)
+        QtGui.QDialog.__init__(self,None,QtCore.Qt.WindowStaysOnTopHint)
         Ui_QDialog.__init__(self)
         # QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("plastique"))
         self.setupUi(self)
@@ -355,8 +355,11 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
         ) == QtCore.Qt.Checked else 'bitmapcachepersistenable:i:0')
 
         index = self.horizontalSlider.value()
-        if index == len(self.metricsMap):
+        if index == len(self.metricsMap) :
             index = index - 1
+            content.append('screen mode id:i:2')
+        else:
+            content.append('screen mode id:i:1')
         content.append('desktopwidth:i:' + str(self.metricsMap[index][0]))
         content.append('desktopheight:i:' + str(self.metricsMap[index][1]))
 
@@ -443,8 +446,11 @@ class RDPDialog(QtGui.QDialog, Ui_QDialog):
             'bitmapcachepersistenable:i:', '1' if self.bitMapCheckBox.checkState() == QtCore.Qt.Checked else '0')
 
         index = self.horizontalSlider.value()
-        if index == len(self.metricsMap):
+        if index == len(self.metricsMap) :
             index = index - 1
+            self.rdcCtl.setContentFromOpenFile('screen mode id:i:', '2')
+        else:
+            self.rdcCtl.setContentFromOpenFile('screen mode id:i:', '1')
         self.rdcCtl.setContentFromOpenFile(
             'desktopwidth:i:', str(self.metricsMap[index][0]))
         self.rdcCtl.setContentFromOpenFile(

@@ -51,6 +51,7 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
 
         self.initWin()
         self.initConfig()
+        
         powerIcon = QtGui.QIcon()
         powerPixMap=QtGui.QPixmap(self.currentDir+'/img/power.png')
         powerPixMap.scaled(50,50,QtCore.Qt.KeepAspectRatioByExpanding)
@@ -156,6 +157,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         if self.isSthWrong(err,msg,self.statusLabel1):
             pass
         else:
+            self.userNameLineEdit.clear()
+            self.pwdLineEdit.clear()
+            self.roleComboBox.setCurrentIndex(0)
             self.statusLabel.clear()
             self.quitPushButton.show()
             self.indexWidget.hide()

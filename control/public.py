@@ -84,3 +84,9 @@ def removeCmdkeyEnv(IP):
     delePro = subprocess.Popen('cmdkey /delete:' + IP, shell=False)
     delePro.wait()
     delePro.terminate()
+
+def netSetting():
+    cmd = 'ncpa.cpl'
+    process = subprocess.Popen(cmd, shell=True)
+    process.wait()
+    process.terminate()

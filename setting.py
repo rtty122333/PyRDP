@@ -25,6 +25,7 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
         self.configPath=parent.configPath
         self.setSurePBtn.clicked.connect(self.settingFunc)
         self.setCancelPBtn.clicked.connect(self.cancelFunc)
+        self.netSetPBtn.clicked.connect(self.setNetFunc)
         self.setFixedSize(self.width(), self.height()); 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(curdir+'/img/setting.png'),
@@ -55,3 +56,6 @@ class SettingWidget(QtGui.QWidget, Set_QWidget):
         s1 = settings.setValue(r'host', self.hostLineEdit.text())
         s2 = settings.setValue(r'port', self.portLineEdit.text())
         settings.endGroup()
+
+    def setNetFunc(self):
+        public.netSetting()

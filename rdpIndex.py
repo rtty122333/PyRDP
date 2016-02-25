@@ -52,6 +52,16 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
         self.initWin()
         self.initConfig()
         
+        setIcon = QtGui.QIcon()
+        setPixMap=QtGui.QPixmap(self.currentDir+'/img/setting.png')
+        setPixMap.scaled(50,50,QtCore.Qt.KeepAspectRatioByExpanding)
+        setIcon.addPixmap(setPixMap,
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setPushButton=QtGui.QPushButton(setIcon,'',self)
+        self.setPushButton.setIconSize(QtCore.QSize(30,30))
+        self.setPushButton.move(self.winWidth/10*9,self.winHight/10*9)
+        self.setPushButton.clicked.connect(self.indexSetFunc)
+
         powerIcon = QtGui.QIcon()
         powerPixMap=QtGui.QPixmap(self.currentDir+'/img/power.png')
         powerPixMap.scaled(50,50,QtCore.Qt.KeepAspectRatioByExpanding)
@@ -118,6 +128,9 @@ class MyDialog(QtGui.QDialog, Ui_QDialog):
     def settingFunc(self):
         self.settingDialog=setting.SettingWidget(self)
         self.settingDialog.show()
+
+    def indexSetFunc(self):
+        public.volSetting()
 
     def queryRoleCb(self,err,msg):
         if self.isSthWrong(err,msg,self.statusLabel):

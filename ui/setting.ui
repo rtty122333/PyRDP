@@ -111,12 +111,12 @@
     <string/>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>160</y>
-     <width>271</width>
+     <x>90</x>
+     <y>150</y>
+     <width>251</width>
      <height>30</height>
     </rect>
    </property>
@@ -144,8 +144,8 @@
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>40</width>
-        <height>20</height>
+        <width>13</width>
+        <height>17</height>
        </size>
       </property>
      </spacer>
@@ -170,8 +170,8 @@
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>40</width>
-        <height>20</height>
+        <width>13</width>
+        <height>17</height>
        </size>
       </property>
      </spacer>

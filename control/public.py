@@ -86,7 +86,13 @@ def removeCmdkeyEnv(IP):
     delePro.terminate()
 
 def netSetting():
-    cmd = 'ncpa.cpl'
+    cmd = 'explorer.exe ::{7007ACC7-3202-11D1-AAD2-00805FC1270E}'
+    process = subprocess.Popen(cmd, shell=True)
+    process.wait()
+    process.terminate()
+
+def volSetting():
+    cmd = 'sndvol'
     process = subprocess.Popen(cmd, shell=True)
     process.wait()
     process.terminate()
